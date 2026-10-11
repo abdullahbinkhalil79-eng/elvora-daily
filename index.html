@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b0d12" />
-  <title>Elvora Daily — Premium Task Manager</title>
+  <meta name="theme-color" content="#070914" />
+  <meta name="description" content="ABROOOOO is your calm, focused daily workspace for tasks, progress, and personal challenges." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ABROOOOO — Daily Focus, Made Simple" />
+  <meta property="og:description" content="Make space for what matters. Plan your day, track small wins, and build a streak at your own pace." />
+  <title>ABROOOOO — Daily Focus, Made Simple</title>
   <style>
     :root {
       color-scheme: dark;
@@ -127,6 +131,39 @@
     .footer { display:flex; justify-content:space-between; gap:12px; color:#747d8d; font-size:11px; margin-top:20px; flex-wrap:wrap; }
     .toast { position:fixed; left:50%; bottom:22px; transform:translate(-50%,20px); opacity:0; pointer-events:none; padding:11px 15px; background:#efffdf; color:#14200e; border-radius:12px; font-size:12px; font-weight:650; box-shadow:0 10px 40px #0006; transition:all .22s; z-index:10; max-width:calc(100% - 30px); }
     .toast.show { transform:translate(-50%,0); opacity:1; }
+    .toast.reward {
+      padding:14px 18px 14px 48px;
+      border:1px solid rgba(151,229,255,.75);
+      border-radius:16px;
+      color:#f2fbff;
+      background:linear-gradient(110deg,rgba(16,39,68,.97),rgba(44,28,77,.97));
+      box-shadow:0 0 0 1px rgba(116,192,255,.12),0 0 32px rgba(77,174,255,.3),0 12px 38px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.16);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      animation:reward-toast-glow 2s ease-in-out infinite alternate;
+    }
+    .toast.reward::before {
+      content:"✦";
+      position:absolute;
+      left:15px;
+      top:50%;
+      width:23px;
+      height:23px;
+      display:grid;
+      place-items:center;
+      transform:translateY(-50%);
+      border:1px solid rgba(151,229,255,.55);
+      border-radius:8px;
+      color:#a8f3ff;
+      background:linear-gradient(145deg,rgba(63,190,255,.24),rgba(175,104,255,.25));
+      text-shadow:0 0 12px rgba(116,225,255,.9);
+      box-shadow:0 0 16px rgba(88,196,255,.24),inset 0 1px rgba(255,255,255,.2);
+    }
+    @keyframes reward-toast-glow {
+      from { box-shadow:0 0 0 1px rgba(116,192,255,.1),0 0 22px rgba(77,174,255,.22),0 12px 38px rgba(0,0,0,.4),inset 0 1px rgba(255,255,255,.16); }
+      to { box-shadow:0 0 0 1px rgba(116,192,255,.2),0 0 34px rgba(155,103,255,.32),0 12px 38px rgba(0,0,0,.4),inset 0 1px rgba(255,255,255,.2); }
+    }
+    @media (prefers-reduced-motion:reduce) { .toast.reward { animation:none; } }
 
     .celebration-layer { position:fixed; inset:0; z-index:20; display:grid; place-items:center; padding:20px; background:rgba(3,5,9,.46); backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px); opacity:0; pointer-events:none; transition:opacity .24s ease; }
     .celebration-layer.show { opacity:1; pointer-events:auto; }
@@ -264,6 +301,27 @@
     .celebration-icon { border-color:rgba(131,220,255,.38); background:linear-gradient(145deg,rgba(91,193,255,.25),rgba(155,103,255,.13)); box-shadow:0 0 45px rgba(90,174,255,.2),inset 0 1px rgba(255,255,255,.2); }
     @media (prefers-reduced-motion:reduce) { .panel { transition:none!important; } }
 
+    /* Refined brand details and accessible interaction states */
+    .shell { width:min(1120px,calc(100% - 40px)); }
+    .brand-name { font-size:16px; letter-spacing:.16em; font-weight:800; }
+    .brand-sub { font-size:9px; letter-spacing:.14em; }
+    .hero { margin-bottom:28px; }
+    .hero > div:first-child > p:last-child { max-width:490px; }
+    .panel-title { font-size:15px; font-weight:680; }
+    .panel-caption { line-height:1.5; }
+    .date-chip { font-variant-numeric:tabular-nums; }
+    .task-input::placeholder { color:#8290aa; }
+    .filter-btn:hover:not(.active),.reset-btn:hover,.delete-btn:hover { transform:translateY(-1px); }
+    .calendar-action,.challenge-day,.check-btn,.filter-btn,.reset-btn,.delete-btn { -webkit-tap-highlight-color:transparent; }
+    .task-input:focus-visible,.challenge-select:focus-visible,.challenge-custom:focus-visible,.calendar-action:focus-visible { outline:2px solid #9beaff; outline-offset:3px; }
+    .footer { padding-top:15px; border-top:1px solid rgba(137,188,255,.12); line-height:1.6; }
+    @media (max-width:760px) {
+      .shell { width:min(100% - 22px,560px); }
+      .brand-name { font-size:14px; letter-spacing:.12em; }
+      .brand-sub { font-size:8px; letter-spacing:.1em; }
+      .hero { margin-bottom:24px; }
+    }
+
     @media (max-width:760px) {
       .shell { width:min(100% - 22px,560px); padding:19px 0 35px; }
       .topbar { margin-bottom:28px; }
@@ -283,6 +341,45 @@
       .primary-btn { padding:0 14px; }
     }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; scroll-behavior:auto!important; } }
+
+    /* Study Studio */
+    .study-panel { margin-top:18px; }
+    .study-grid { display:grid; grid-template-columns:minmax(230px,.78fr) minmax(0,1.22fr); gap:22px; padding:0 22px 22px; }
+    .study-timer { padding:20px; border:1px solid rgba(137,188,255,.2); border-radius:18px; background:linear-gradient(145deg,rgba(64,132,255,.1),rgba(169,91,255,.08)),rgba(4,10,24,.35); }
+    .study-timer-label { color:var(--muted); font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+    .study-clock { margin:8px 0 16px; color:#e8f8ff; font-size:clamp(38px,7vw,54px); line-height:1; letter-spacing:-.06em; font-variant-numeric:tabular-nums; text-shadow:0 0 25px rgba(91,194,255,.32); }
+    .study-duration-row { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px; }
+    .study-duration { width:90px; padding:9px 10px; border:1px solid var(--border); border-radius:10px; color:var(--text); background:rgba(5,10,24,.65); outline:none; }
+    .study-duration:focus,.study-subject:focus,.study-topic:focus,.study-minutes:focus { border-color:rgba(100,218,255,.7); box-shadow:0 0 0 3px rgba(66,181,255,.12); }
+    .study-timer-actions { display:flex; gap:9px; margin-top:15px; }
+    .study-timer-actions button { min-height:39px; flex:1; border:1px solid rgba(126,219,255,.38); border-radius:11px; color:#e7f8ff; background:linear-gradient(115deg,rgba(26,150,220,.24),rgba(112,91,255,.2)),rgba(255,255,255,.04); font-size:12px; font-weight:700; }
+    .study-timer-actions button:hover { border-color:rgba(156,233,255,.75); filter:brightness(1.13); }
+    .study-progress-copy { display:flex; justify-content:space-between; gap:10px; margin-top:18px; color:var(--muted); font-size:11px; }
+    .study-progress-track { height:6px; margin-top:8px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,.09); }
+    .study-progress-fill { width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#6de4ff,#bd9aff); box-shadow:0 0 14px rgba(99,197,255,.45); transition:width .25s ease; }
+    .study-plan { min-width:0; }
+    .study-form { display:grid; grid-template-columns:minmax(100px,.8fr) minmax(130px,1.4fr) 92px auto; gap:8px; margin-bottom:12px; }
+    .study-subject,.study-topic,.study-minutes { min-width:0; width:100%; padding:11px 10px; border:1px solid rgba(137,188,255,.2); border-radius:11px; color:var(--text); background:rgba(5,10,24,.55); outline:none; font-size:12px; }
+    .study-form .primary-btn { min-height:39px; border:1px solid rgba(126,219,255,.4); color:#e7f8ff; background:linear-gradient(115deg,rgba(26,150,220,.3),rgba(112,91,255,.25)),rgba(255,255,255,.04); font-size:12px; }
+    .study-task-list { list-style:none; margin:0; padding:0; }
+    .study-task { display:flex; align-items:center; gap:10px; padding:12px 9px; border-top:1px solid rgba(133,177,255,.09); border-radius:10px; }
+    .study-task:hover { background:rgba(77,149,255,.055); }
+    .study-check { width:21px; height:21px; flex:0 0 21px; border:1px solid rgba(255,255,255,.26); border-radius:7px; color:#07131d; background:transparent; }
+    .study-task.done .study-check { border-color:#9af4ff; background:linear-gradient(145deg,#a4f5ff,#a8baff); }
+    .study-task-copy { min-width:0; flex:1; overflow-wrap:anywhere; font-size:12px; line-height:1.5; }
+    .study-task.done .study-task-copy { color:#8994a9; text-decoration:line-through; }
+    .study-task-meta { display:block; margin-top:2px; color:#8d9ab2; font-size:10px; }
+    .study-delete { padding:6px 8px; border:0; border-radius:8px; color:#8d9ab2; background:transparent; font-size:17px; }
+    .study-delete:hover { color:var(--danger); background:rgba(255,143,154,.1); }
+    .study-empty { padding:18px 10px; color:var(--muted); text-align:center; font-size:12px; line-height:1.6; }
+    .study-check:focus-visible,.study-delete:focus-visible,.study-timer-actions button:focus-visible,.study-form .primary-btn:focus-visible { outline:2px solid #9beaff; outline-offset:3px; }
+    @media (max-width:760px) {
+      .study-grid { grid-template-columns:1fr; gap:14px; padding:0 17px 18px; }
+      .study-form { grid-template-columns:1fr 1fr; }
+      .study-topic { grid-column:1/-1; grid-row:2; }
+      .study-form .primary-btn { grid-column:2; grid-row:3; }
+      .study-minutes { grid-column:1; grid-row:3; }
+    }
   </style>
 </head>
 <body>
@@ -294,7 +391,7 @@
         </div>
         <div>
           <div class="brand-name">ABROOOOO</div>
-          <div class="brand-sub">DAILY WORKSPACE</div>
+          <div class="brand-sub">DAILY FOCUS · MADE SIMPLE</div>
         </div>
       </div>
       <div class="date-chip" id="dateChip">TODAY</div>
@@ -302,14 +399,14 @@
 
     <section class="hero">
       <div>
-        <p class="eyebrow">A little progress, every day</p>
+        <p class="eyebrow">A clearer way to make progress</p>
         <h1>Make today<br>count.</h1>
-        <p>One clear task at a time. Build momentum, keep your focus, and let the small wins add up.</p>
+        <p>Plan with intention, focus on what matters, and turn small daily wins into lasting momentum.</p>
       </div>
       <div class="progress-card">
         <div class="progress-head"><span>TODAY'S PROGRESS</span><span id="progressPercent">0%</span></div>
         <div class="progress-number"><span id="completedCount">0</span><span style="color:var(--muted);font-size:17px;font-weight:500"> / <span id="totalCount">0</span></span></div>
-        <div class="track" aria-label="Task completion progress"><div class="track-fill" id="progressFill"></div></div>
+        <div class="track" role="progressbar" aria-label="Task completion progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div class="track-fill" id="progressFill"></div></div>
         <div class="progress-foot" id="progressMessage">Add your first task to get started.</div>
       </div>
     </section>
@@ -317,12 +414,12 @@
     <section class="layout">
       <section class="panel" aria-labelledby="tasksHeading">
         <div class="panel-head">
-          <div><h2 class="panel-title" id="tasksHeading">Your tasks</h2><p class="panel-caption">Keep it simple. Keep it moving.</p></div>
+          <div><h2 class="panel-title" id="tasksHeading">Today’s priorities</h2><p class="panel-caption">A focused list for a more intentional day.</p></div>
           <span class="count-pill" id="remainingPill">0 remaining</span>
         </div>
         <form class="add-form" id="taskForm">
-          <input class="task-input" id="taskInput" type="text" maxlength="160" placeholder="What do you want to get done?" autocomplete="off" aria-label="New task" required>
-          <button class="primary-btn" type="submit">+ Add</button>
+          <input class="task-input" id="taskInput" type="text" maxlength="160" placeholder="Add a priority for today…" autocomplete="off" aria-label="New task" required>
+          <button class="primary-btn" type="submit">+ Add task</button>
         </form>
         <div class="filters" role="group" aria-label="Filter tasks">
           <button class="filter-btn active" type="button" data-filter="all">All</button>
@@ -335,16 +432,16 @@
 
       <aside class="side-stack">
         <section class="panel">
-          <div class="panel-head"><div><h2 class="panel-title">A note to self</h2><p class="panel-caption">Your daily reminder</p></div><span aria-hidden="true">✦</span></div>
+          <div class="panel-head"><div><h2 class="panel-title">A note to self</h2><p class="panel-caption">A reminder for your day</p></div><span aria-hidden="true">✦</span></div>
           <div class="side-body">
             <div class="focus-note">
-              <strong>Consistency over intensity.</strong>
-              <p>You don't need a perfect day. Just take the next useful step, then the next one.</p>
+              <strong>Progress, not perfection.</strong>
+              <p>You don’t need a perfect plan. Take the next useful step, then build from there.</p>
             </div>
           </div>
         </section>
         <section class="panel">
-          <div class="panel-head"><div><h2 class="panel-title">Today's overview</h2><p class="panel-caption">Small wins count, too.</p></div></div>
+          <div class="panel-head"><div><h2 class="panel-title">Your daily overview</h2><p class="panel-caption">See how far you’ve come today.</p></div></div>
           <div class="side-body">
             <div class="mini-stats">
               <div class="stat"><div class="stat-label">Completed</div><div class="stat-value" id="sideCompleted">0</div></div>
@@ -354,7 +451,7 @@
           </div>
         </section>
         <section class="panel" aria-labelledby="challengeHeading">
-          <div class="panel-head"><div><h2 class="panel-title" id="challengeHeading">Your challenge</h2><p class="panel-caption">Build a streak, one day at a time.</p></div><span aria-hidden="true">✦</span></div>
+          <div class="panel-head"><div><h2 class="panel-title" id="challengeHeading">Build a daily streak</h2><p class="panel-caption">Set a goal and show up, one day at a time.</p></div><span aria-hidden="true">✦</span></div>
           <div class="side-body">
             <div class="challenge-controls">
               <select class="challenge-select" id="challengeLength" aria-label="Challenge duration">
@@ -377,9 +474,39 @@
       </aside>
     </section>
 
+    <section class="panel study-panel" aria-labelledby="studyHeading">
+      <div class="panel-head">
+        <div><h2 class="panel-title" id="studyHeading">Study Studio</h2><p class="panel-caption">Set your focus time, plan subjects, and celebrate every step.</p></div>
+        <span class="count-pill" id="studyTaskCount">0 subjects</span>
+      </div>
+      <div class="study-grid">
+        <div class="study-timer">
+          <div class="study-timer-label">Focus session</div>
+          <div class="study-clock" id="studyClock" role="timer" aria-live="off">60:00</div>
+          <label class="study-duration-row" for="studyDuration">Set session length <input class="study-duration" id="studyDuration" type="number" min="1" max="600" value="60" aria-label="Study session length in minutes"> min</label>
+          <div class="study-timer-actions">
+            <button id="studyTimerToggle" type="button">Start focus</button>
+            <button id="studyTimerReset" type="button">Reset</button>
+          </div>
+          <div class="study-progress-copy"><span>Subject progress</span><span id="studyProgressText">0 of 0 complete</span></div>
+          <div class="study-progress-track" role="progressbar" aria-label="Study subject completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="studyProgressTrack"><div class="study-progress-fill" id="studyProgressFill"></div></div>
+        </div>
+        <div class="study-plan">
+          <form class="study-form" id="studyForm">
+            <input class="study-subject" id="studySubject" type="text" maxlength="50" placeholder="Subject" aria-label="Subject name" required>
+            <input class="study-topic" id="studyTopic" type="text" maxlength="120" placeholder="What will you study?" aria-label="Study task" required>
+            <input class="study-minutes" id="studyMinutes" type="number" min="1" max="600" placeholder="Minutes" aria-label="Time for this subject in minutes" required>
+            <button class="primary-btn" type="submit">+ Add subject</button>
+          </form>
+          <ul class="study-task-list" id="studyTaskList" aria-label="Study subjects"></ul>
+          <div class="study-empty" id="studyEmpty">Add a subject, write what you’ll study, and set its time.</div>
+        </div>
+      </div>
+    </section>
+
     <footer class="footer">
-      <span>ELVORA DAILY · YOUR SPACE, YOUR PACE</span>
-      <span>Saved in this browser on this device</span>
+      <span>© <span id="currentYear"></span> ABROOOOO · YOUR SPACE, YOUR PACE</span>
+      <span>Your tasks stay saved in this browser on this device.</span>
     </footer>
   </main>
   <div class="celebration-layer" id="celebrationLayer" role="dialog" aria-modal="true" aria-labelledby="celebrationTitle" aria-describedby="celebrationMessage">
@@ -397,6 +524,7 @@
       "use strict";
       const STORAGE_KEY = "elvora-daily-tasks-v1";
       const CHALLENGE_KEY = "elvora-daily-challenge-v1";
+      const STUDY_KEY = "abrooooo-study-plan-v1";
       const challengeLength = document.getElementById("challengeLength");
       const customChallengeLength = document.getElementById("customChallengeLength");
       const challengeStatus = document.getElementById("challengeStatus");
@@ -408,6 +536,9 @@
       const toast = document.getElementById("toast");
       let tasks = loadTasks();
       let challenge = loadChallenge();
+      let studyPlan = loadStudyPlan();
+      let studySecondsLeft = studyPlan.remainingSeconds;
+      let studyTimerInterval = null;
       let currentFilter = "all";
       let toastTimeout;
       let celebrationTimeout;
@@ -451,6 +582,37 @@
         } catch (error) {
           console.warn("Could not load challenge:", error);
           return null;
+        }
+      }
+
+      function loadStudyPlan() {
+        const fallback = { durationMinutes: 60, remainingSeconds: 3600, items: [] };
+        try {
+          const stored = localStorage.getItem(STUDY_KEY);
+          if (!stored) return fallback;
+          const parsed = JSON.parse(stored);
+          if (!parsed || !Array.isArray(parsed.items)) return fallback;
+          const durationMinutes = Number.isInteger(parsed.durationMinutes) && parsed.durationMinutes >= 1 && parsed.durationMinutes <= 600
+            ? parsed.durationMinutes : 60;
+          const remainingSeconds = Number.isInteger(parsed.remainingSeconds) && parsed.remainingSeconds >= 0
+            ? Math.min(parsed.remainingSeconds, durationMinutes * 60) : durationMinutes * 60;
+          const items = parsed.items.filter(item => item && typeof item.id === "string" &&
+            typeof item.subject === "string" && typeof item.topic === "string" &&
+            Number.isInteger(item.minutes) && item.minutes >= 1 && typeof item.done === "boolean");
+          return { durationMinutes, remainingSeconds, items };
+        } catch (error) {
+          console.warn("Could not load study plan:", error);
+          return fallback;
+        }
+      }
+
+      function saveStudyPlan() {
+        try {
+          studyPlan.remainingSeconds = studySecondsLeft;
+          localStorage.setItem(STUDY_KEY, JSON.stringify(studyPlan));
+        } catch (error) {
+          showToast("Could not save study plan. Check browser storage settings.");
+          console.error("Could not save study plan:", error);
         }
       }
 
@@ -525,17 +687,46 @@
         }
       }
 
+      function formatStudyClock(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainder = seconds % 60;
+        return `${String(minutes).padStart(2, "0")}:${String(remainder).padStart(2, "0")}`;
+      }
+
+      function renderStudy() {
+        document.getElementById("studyClock").textContent = formatStudyClock(studySecondsLeft);
+        document.getElementById("studyDuration").value = studyPlan.durationMinutes;
+        const completed = studyPlan.items.filter(item => item.done).length;
+        const total = studyPlan.items.length;
+        const percent = total ? Math.round(completed / total * 100) : 0;
+        document.getElementById("studyTaskCount").textContent = `${total} ${total === 1 ? "subject" : "subjects"}`;
+        document.getElementById("studyProgressText").textContent = `${completed} of ${total} complete`;
+        document.getElementById("studyProgressFill").style.width = `${percent}%`;
+        document.getElementById("studyProgressTrack").setAttribute("aria-valuenow", percent);
+        document.getElementById("studyTimerToggle").textContent = studyTimerInterval ? "Pause focus" : "Start focus";
+        const list = document.getElementById("studyTaskList");
+        list.innerHTML = studyPlan.items.map(item => `
+          <li class="study-task ${item.done ? "done" : ""}" data-study-id="${escapeHTML(item.id)}">
+            <button class="study-check" type="button" data-study-action="toggle" aria-label="${item.done ? "Mark as not completed" : "Complete study task"}" aria-pressed="${item.done}">${item.done ? "✓" : ""}</button>
+            <div class="study-task-copy"><strong>${escapeHTML(item.subject)}</strong> — ${escapeHTML(item.topic)}<span class="study-task-meta">${item.minutes} min planned · ${item.done ? "Completed" : "Ready when you are"}</span></div>
+            <button class="study-delete" type="button" data-study-action="delete" aria-label="Remove ${escapeHTML(item.subject)} study task" title="Remove task">×</button>
+          </li>
+        `).join("");
+        document.getElementById("studyEmpty").hidden = total > 0;
+      }
+
       function escapeHTML(value) {
         return value.replace(/[&<>"']/g, character => ({
           "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
         })[character]);
       }
 
-      function showToast(message) {
+      function showToast(message, isReward = false) {
         toast.textContent = message;
+        toast.classList.toggle("reward", isReward);
         toast.classList.add("show");
         clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => toast.classList.remove("show"), 2200);
+        toastTimeout = setTimeout(() => toast.classList.remove("show"), isReward ? 3600 : 2200);
       }
 
       function formatDate() {
@@ -543,6 +734,7 @@
         document.getElementById("dateChip").textContent = now.toLocaleDateString(undefined, {
           weekday: "short", day: "numeric", month: "short", year: "numeric"
         }).toUpperCase();
+        document.getElementById("currentYear").textContent = now.getFullYear();
       }
 
       function launchConfetti() {
@@ -585,6 +777,7 @@
         document.getElementById("totalCount").textContent = total;
         document.getElementById("progressPercent").textContent = percent + "%";
         document.getElementById("progressFill").style.width = percent + "%";
+        document.getElementById("progressTrack").setAttribute("aria-valuenow", percent);
         document.getElementById("remainingPill").textContent = remaining + " remaining";
         document.getElementById("sideCompleted").textContent = completed;
         document.getElementById("sideRemaining").textContent = remaining;
@@ -750,6 +943,104 @@
         showToast(`${days}-day challenge started!`);
       });
 
+      document.getElementById("studyDuration").addEventListener("change", event => {
+        const minutes = Number(event.target.value);
+        if (!Number.isInteger(minutes) || minutes < 1 || minutes > 600) {
+          showToast("Set a study session from 1 to 600 minutes.");
+          renderStudy();
+          return;
+        }
+        if (studyTimerInterval) clearInterval(studyTimerInterval);
+        studyTimerInterval = null;
+        studyPlan.durationMinutes = minutes;
+        studySecondsLeft = minutes * 60;
+        saveStudyPlan();
+        renderStudy();
+      });
+
+      document.getElementById("studyTimerToggle").addEventListener("click", () => {
+        if (studyTimerInterval) {
+          clearInterval(studyTimerInterval);
+          studyTimerInterval = null;
+          saveStudyPlan();
+          renderStudy();
+          return;
+        }
+        if (studySecondsLeft <= 0) studySecondsLeft = studyPlan.durationMinutes * 60;
+        studyTimerInterval = setInterval(() => {
+          studySecondsLeft = Math.max(0, studySecondsLeft - 1);
+          if (studySecondsLeft === 0) {
+            clearInterval(studyTimerInterval);
+            studyTimerInterval = null;
+            showToast("Focus session complete! Take a well-earned break.");
+          }
+          saveStudyPlan();
+          renderStudy();
+        }, 1000);
+        renderStudy();
+      });
+
+      document.getElementById("studyTimerReset").addEventListener("click", () => {
+        if (studyTimerInterval) clearInterval(studyTimerInterval);
+        studyTimerInterval = null;
+        studySecondsLeft = studyPlan.durationMinutes * 60;
+        saveStudyPlan();
+        renderStudy();
+        showToast("Focus timer reset. You’re ready for a fresh session.");
+      });
+
+      document.getElementById("studyForm").addEventListener("submit", event => {
+        event.preventDefault();
+        const subject = document.getElementById("studySubject").value.trim();
+        const topic = document.getElementById("studyTopic").value.trim();
+        const minutes = Number(document.getElementById("studyMinutes").value);
+        if (!subject || !topic || !Number.isInteger(minutes) || minutes < 1 || minutes > 600) {
+          showToast("Add a subject, task, and time from 1 to 600 minutes.");
+          return;
+        }
+        studyPlan.items.push({
+          id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          subject,
+          topic,
+          minutes,
+          done: false
+        });
+        saveStudyPlan();
+        event.currentTarget.reset();
+        renderStudy();
+        document.getElementById("studySubject").focus();
+        showToast(`${subject} added to your study plan.`);
+      });
+
+      document.getElementById("studyTaskList").addEventListener("click", event => {
+        const button = event.target.closest("button[data-study-action]");
+        if (!button) return;
+        const row = button.closest(".study-task");
+        const item = studyPlan.items.find(entry => entry.id === row?.dataset.studyId);
+        if (!item) return;
+        if (button.dataset.studyAction === "toggle") {
+          item.done = !item.done;
+          saveStudyPlan();
+          renderStudy();
+          if (item.done) {
+            const rewards = [
+              `Great work on ${item.subject}! Every focused minute counts. ✨`,
+              `One more win, ${item.subject} done! You’re building real momentum. 🚀`,
+              `Brilliant progress! You showed up and got it done. Keep going! 🌟`,
+              `Nice focus! ${item.minutes} planned minutes turned into a completed win. 🎉`
+            ];
+            showToast(rewards[Math.floor(Math.random() * rewards.length)], true);
+          } else {
+            showToast("Task back on your list. You can finish it when you’re ready.");
+          }
+        } else if (button.dataset.studyAction === "delete") {
+          studyPlan.items = studyPlan.items.filter(entry => entry.id !== item.id);
+          saveStudyPlan();
+          renderStudy();
+          showToast("Study task removed.");
+        }
+      });
+
       document.getElementById("celebrationClose").addEventListener("click", closeCelebration);
       document.getElementById("celebrationLayer").addEventListener("click", event => {
         if (event.target.id === "celebrationLayer") closeCelebration();
@@ -761,6 +1052,7 @@
       formatDate();
       render();
       renderChallenge();
+      renderStudy();
     })();
   </script>
 </body>
