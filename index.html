@@ -44,6 +44,24 @@
     }
     .brand-mark svg { width:22px; height:22px; }
     .brand-name { font-size:18px; letter-spacing:.13em; font-weight:750; }
+    .challenge-controls { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:14px; }
+    .challenge-select,.challenge-custom { min-width:0; width:100%; border:1px solid var(--border); border-radius:11px; padding:10px; color:var(--text); background:rgba(0,0,0,.2); outline:none; font-size:12px; }
+    .challenge-select:focus,.challenge-custom:focus { border-color:rgba(130,218,255,.7); box-shadow:0 0 0 3px rgba(89,190,255,.1); }
+    .challenge-custom[hidden] { display:none; }
+    .challenge-start { grid-column:1/-1; width:100%; min-height:39px; border:1px solid rgba(130,218,255,.35); border-radius:11px; color:#d9f5ff; background:linear-gradient(115deg,rgba(44,149,219,.25),rgba(137,92,255,.2)),rgba(255,255,255,.045); box-shadow:inset 0 1px rgba(255,255,255,.16),0 8px 24px rgba(54,145,255,.12); font-size:12px; font-weight:700; }
+    .challenge-start:hover { border-color:rgba(130,218,255,.65); filter:brightness(1.12); }
+    .challenge-status { min-height:18px; margin:13px 0 10px; color:var(--muted); font-size:11px; line-height:1.5; }
+    .challenge-calendar-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 0 12px; }
+    .challenge-calendar-actions[hidden] { display:none; }
+    .calendar-action { min-height:36px; padding:8px 9px; border:1px solid rgba(126,219,255,.35); border-radius:10px; color:#e7f8ff; background:linear-gradient(115deg,rgba(26,150,220,.2),rgba(112,91,255,.18)),rgba(255,255,255,.04); box-shadow:inset 0 1px rgba(255,255,255,.14),0 0 14px rgba(66,169,255,.1); text-align:center; text-decoration:none; font-size:10px; font-weight:700; }
+    .calendar-action:hover { border-color:rgba(156,233,255,.75); filter:brightness(1.13); box-shadow:0 0 20px rgba(68,184,255,.2); }
+    .challenge-calendar { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; }
+    .challenge-day { aspect-ratio:1; min-width:0; padding:0; border:1px solid var(--border); border-radius:9px; color:#b8c1d0; background:rgba(255,255,255,.035); font-size:10px; }
+    .challenge-day:hover:not(:disabled) { border-color:rgba(130,218,255,.65); color:#e8f8ff; background:rgba(81,174,255,.12); }
+    .challenge-day:disabled { opacity:.35; cursor:default; }
+    .challenge-day.complete { color:#102016; border-color:#a8f2bc; background:linear-gradient(145deg,#a8f2bc,#83d9ef); font-weight:750; }
+    .primary-btn { border:1px solid rgba(190,226,255,.4); background:linear-gradient(125deg,#a7f3d0 0%,#8bd5ff 48%,#c4a7ff 100%); color:#101b25; box-shadow:0 7px 24px rgba(87,184,255,.2),inset 0 1px rgba(255,255,255,.72),inset 0 -1px rgba(24,57,90,.12); }
+    .primary-btn:hover { filter:brightness(1.08) saturate(1.1); box-shadow:0 9px 30px rgba(87,184,255,.28),inset 0 1px rgba(255,255,255,.8); }
     .brand-sub { color:var(--muted); font-size:10px; letter-spacing:.16em; margin-top:4px; }
     .date-chip { border:1px solid var(--border); border-radius:999px; padding:10px 14px; color:#cbd0dc; background:rgba(255,255,255,.035); font-size:12px; white-space:nowrap; }
     .hero { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:24px; }
@@ -77,6 +95,8 @@
     .task-input:focus { border-color:rgba(199,243,163,.7); box-shadow:0 0 0 3px rgba(199,243,163,.08); }
     .primary-btn { border:0; border-radius:13px; padding:0 17px; font-weight:750; background:var(--accent); color:var(--accent-ink); transition:transform .15s,filter .15s; }
     .primary-btn:hover { filter:brightness(1.05); transform:translateY(-1px); }
+    .add-form .primary-btn { min-height:39px; border:1px solid rgba(130,218,255,.35); border-radius:11px; color:#d9f5ff; background:linear-gradient(115deg,rgba(44,149,219,.25),rgba(137,92,255,.2)),rgba(255,255,255,.045); box-shadow:inset 0 1px rgba(255,255,255,.16),0 8px 24px rgba(54,145,255,.12); font-size:12px; }
+    .add-form .primary-btn:hover { border-color:rgba(130,218,255,.65); filter:brightness(1.12); transform:none; }
     .filters { display:flex; gap:7px; padding:0 22px 15px; flex-wrap:wrap; }
     .filter-btn { border:1px solid transparent; border-radius:999px; background:transparent; color:var(--muted); padding:7px 11px; font-size:12px; }
     .filter-btn.active { color:var(--text); background:rgba(255,255,255,.09); border-color:var(--border); }
@@ -122,6 +142,128 @@
     @keyframes confetti-fall { to { transform:translate3d(var(--drift),105vh,0) rotate(680deg); opacity:0; } }
     @media (prefers-reduced-motion:reduce) { .celebration-icon,.confetti { animation:none!important; } }
 
+    /* Neon-glass sci-fi polish */
+    :root {
+      --bg: #070914;
+      --panel: rgba(14,20,39,.62);
+      --panel-strong: rgba(20,29,54,.78);
+      --border: rgba(139,190,255,.19);
+      --text: #f2f7ff;
+      --muted: #9daac4;
+      --accent: #a9f4ff;
+      --accent-ink: #07131d;
+      --shadow: 0 24px 75px rgba(0,0,0,.42), 0 0 36px rgba(78,122,255,.08);
+    }
+    body {
+      position: relative;
+      isolation: isolate;
+      background:
+        radial-gradient(ellipse at 7% 8%, rgba(28,120,255,.21), transparent 34rem),
+        radial-gradient(ellipse at 94% 9%, rgba(169,74,255,.19), transparent 31rem),
+        radial-gradient(ellipse at 50% 94%, rgba(28,218,223,.11), transparent 35rem),
+        #070914;
+      background-attachment: fixed;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: .2;
+      background-image: linear-gradient(rgba(134,177,255,.08) 1px, transparent 1px), linear-gradient(90deg,rgba(134,177,255,.08) 1px,transparent 1px);
+      background-size: 52px 52px;
+      mask-image: linear-gradient(to bottom,black,transparent 82%);
+    }
+    .shell { position: relative; z-index: 1; }
+    .brand-mark {
+      border-color: rgba(125,210,255,.35);
+      background: linear-gradient(145deg,rgba(91,174,255,.2),rgba(149,93,255,.08));
+      box-shadow: inset 0 1px rgba(255,255,255,.2), 0 0 25px rgba(79,165,255,.18), 0 8px 28px rgba(0,0,0,.25);
+    }
+    .brand-name { text-shadow: 0 0 22px rgba(111,202,255,.3); }
+    .brand-sub,.eyebrow { color:#9feaff; }
+    h1 {
+      background: linear-gradient(105deg,#f4f8ff 6%,#a8eaff 49%,#c4a1ff 92%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      filter:drop-shadow(0 0 24px rgba(94,158,255,.17));
+    }
+    .date-chip,.count-pill {
+      border-color:rgba(137,188,255,.23);
+      background:linear-gradient(120deg,rgba(86,151,255,.09),rgba(179,104,255,.07));
+      box-shadow:inset 0 1px rgba(255,255,255,.07),0 0 22px rgba(79,130,255,.08);
+    }
+    .panel,.progress-card {
+      border-color:rgba(137,188,255,.19);
+      background:linear-gradient(145deg,rgba(24,32,59,.79),rgba(12,16,32,.72) 58%,rgba(20,18,43,.67));
+      box-shadow:0 24px 70px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.11),0 0 32px rgba(83,115,255,.075);
+    }
+    .panel { transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease; }
+    .panel:hover {
+      transform:translateY(-2px);
+      border-color:rgba(122,208,255,.32);
+      box-shadow:0 27px 75px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.13),0 0 34px rgba(92,132,255,.13);
+    }
+    .panel::before { background:linear-gradient(90deg,transparent,rgba(123,209,255,.43),rgba(189,125,255,.25),transparent); }
+    .progress-card::after { background:rgba(112,202,255,.2); filter:blur(9px); }
+    .progress-head,.progress-number { position:relative; z-index:1; }
+    .track { background:rgba(255,255,255,.09); box-shadow:inset 0 1px 5px rgba(0,0,0,.3); }
+    .track-fill { background:linear-gradient(90deg,#6de4ff,#78a9ff,#d4a0ff); box-shadow:0 0 15px rgba(99,197,255,.55); }
+    .task-input,.challenge-select,.challenge-custom {
+      border-color:rgba(137,188,255,.2);
+      background:rgba(5,10,24,.55);
+      box-shadow:inset 0 1px rgba(255,255,255,.035);
+    }
+    .task-input:focus,.challenge-select:focus,.challenge-custom:focus {
+      border-color:rgba(100,218,255,.7);
+      box-shadow:0 0 0 3px rgba(66,181,255,.12),0 0 22px rgba(73,177,255,.1);
+    }
+    .add-form .primary-btn,.challenge-start {
+      border:1px solid rgba(126,219,255,.48);
+      color:#e7f8ff;
+      background:linear-gradient(115deg,rgba(26,150,220,.34),rgba(112,91,255,.31) 58%,rgba(189,91,255,.24)),rgba(255,255,255,.055);
+      box-shadow:inset 0 1px rgba(255,255,255,.23),0 0 18px rgba(66,169,255,.16),0 8px 24px rgba(29,79,173,.2);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,filter .2s ease;
+    }
+    .add-form .primary-btn:hover,.challenge-start:hover {
+      border-color:rgba(156,233,255,.8);
+      filter:brightness(1.13);
+      transform:translateY(-1px);
+      box-shadow:inset 0 1px rgba(255,255,255,.3),0 0 25px rgba(68,184,255,.27),0 10px 28px rgba(49,70,180,.24);
+    }
+    .filter-btn.active {
+      border-color:rgba(119,200,255,.3);
+      background:linear-gradient(120deg,rgba(67,144,255,.16),rgba(169,102,255,.13));
+      box-shadow:inset 0 1px rgba(255,255,255,.08),0 0 16px rgba(84,132,255,.09);
+    }
+    .task-item { border-top-color:rgba(133,177,255,.09); }
+    .task-item:hover { background:linear-gradient(90deg,rgba(77,149,255,.07),rgba(170,103,255,.035),transparent); }
+    .task-item.done .check-btn,.challenge-day.complete {
+      color:#07131d;
+      border-color:#9af4ff;
+      background:linear-gradient(145deg,#a4f5ff,#a8baff);
+      box-shadow:0 0 15px rgba(105,216,255,.34);
+    }
+    .check-btn:focus-visible,.delete-btn:focus-visible,.filter-btn:focus-visible,.challenge-day:focus-visible,.reset-btn:focus-visible,.primary-btn:focus-visible,.challenge-start:focus-visible {
+      outline:2px solid #9beaff;
+      outline-offset:3px;
+    }
+    .challenge-day { border-color:rgba(137,188,255,.2); background:rgba(25,34,60,.48); }
+    .challenge-day:hover:not(:disabled) { box-shadow:0 0 15px rgba(85,190,255,.18); }
+    .focus-note { border-color:rgba(123,203,255,.23); background:linear-gradient(135deg,rgba(70,145,255,.1),rgba(167,94,255,.07)); }
+    .stat { border-color:rgba(137,188,255,.16); background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(90,115,200,.035)); }
+    .stat-value { color:#d8f4ff; text-shadow:0 0 18px rgba(104,200,255,.2); }
+    .reset-btn { border-color:rgba(137,188,255,.2); background:rgba(24,32,57,.42); }
+    .toast { background:linear-gradient(115deg,#dffbff,#e9dcff); color:#10162a; box-shadow:0 10px 40px rgba(84,161,255,.26); }
+    .celebration-card { border-color:rgba(139,203,255,.3); background:linear-gradient(145deg,rgba(28,39,69,.97),rgba(14,18,38,.98)); box-shadow:0 30px 100px rgba(0,0,0,.58),0 0 50px rgba(93,127,255,.18),inset 0 1px rgba(255,255,255,.16); }
+    .celebration-card::before { background:rgba(91,198,255,.23); }
+    .celebration-icon { border-color:rgba(131,220,255,.38); background:linear-gradient(145deg,rgba(91,193,255,.25),rgba(155,103,255,.13)); box-shadow:0 0 45px rgba(90,174,255,.2),inset 0 1px rgba(255,255,255,.2); }
+    @media (prefers-reduced-motion:reduce) { .panel { transition:none!important; } }
+
     @media (max-width:760px) {
       .shell { width:min(100% - 22px,560px); padding:19px 0 35px; }
       .topbar { margin-bottom:28px; }
@@ -151,7 +293,7 @@
           <svg viewBox="0 0 24 24" fill="none"><path d="M5 16.5 12 3l7 13.5-7-3.7-7 3.7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="m8.2 17.2 3.8-2 3.8 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         </div>
         <div>
-          <div class="brand-name">ELVORA</div>
+          <div class="brand-name">ABROOOOO</div>
           <div class="brand-sub">DAILY WORKSPACE</div>
         </div>
       </div>
@@ -211,6 +353,27 @@
             <button class="reset-btn" type="button" id="clearDoneBtn">Clear completed tasks</button>
           </div>
         </section>
+        <section class="panel" aria-labelledby="challengeHeading">
+          <div class="panel-head"><div><h2 class="panel-title" id="challengeHeading">Your challenge</h2><p class="panel-caption">Build a streak, one day at a time.</p></div><span aria-hidden="true">✦</span></div>
+          <div class="side-body">
+            <div class="challenge-controls">
+              <select class="challenge-select" id="challengeLength" aria-label="Challenge duration">
+                <option value="7">7 days</option>
+                <option value="14">14 days</option>
+                <option value="30" selected>30 days</option>
+                <option value="custom">Custom</option>
+              </select>
+              <input class="challenge-custom" id="customChallengeLength" type="number" min="1" max="365" value="30" placeholder="Days (1–365)" aria-label="Custom challenge length" hidden>
+              <button class="challenge-start" id="startChallenge" type="button">Start challenge</button>
+            </div>
+            <p class="challenge-status" id="challengeStatus" aria-live="polite">Choose a duration and start your challenge.</p>
+            <div class="challenge-calendar-actions" id="challengeCalendarActions" hidden>
+              <a class="calendar-action" id="googleCalendarLink" target="_blank" rel="noopener noreferrer">Add to Google Calendar</a>
+              <button class="calendar-action" id="downloadCalendar" type="button">Download .ics</button>
+            </div>
+            <div class="challenge-calendar" id="challengeCalendar" role="group" aria-label="Challenge day calendar"></div>
+          </div>
+        </section>
       </aside>
     </section>
 
@@ -233,12 +396,18 @@
     (() => {
       "use strict";
       const STORAGE_KEY = "elvora-daily-tasks-v1";
+      const CHALLENGE_KEY = "elvora-daily-challenge-v1";
+      const challengeLength = document.getElementById("challengeLength");
+      const customChallengeLength = document.getElementById("customChallengeLength");
+      const challengeStatus = document.getElementById("challengeStatus");
+      const challengeCalendar = document.getElementById("challengeCalendar");
       const taskForm = document.getElementById("taskForm");
       const taskInput = document.getElementById("taskInput");
       const taskList = document.getElementById("taskList");
       const emptyState = document.getElementById("emptyState");
       const toast = document.getElementById("toast");
       let tasks = loadTasks();
+      let challenge = loadChallenge();
       let currentFilter = "all";
       let toastTimeout;
       let celebrationTimeout;
@@ -268,6 +437,91 @@
           showToast("Could not save. Check browser storage settings.");
           console.error("Could not save tasks:", error);
           return false;
+        }
+      }
+
+      function loadChallenge() {
+        try {
+          const stored = localStorage.getItem(CHALLENGE_KEY);
+          if (!stored) return null;
+          const parsed = JSON.parse(stored);
+          if (!parsed || !Number.isInteger(parsed.days) || parsed.days < 1 || parsed.days > 365 ||
+              typeof parsed.startDate !== "string" || !Array.isArray(parsed.completed)) return null;
+          return { days: parsed.days, startDate: parsed.startDate, completed: parsed.completed.filter(day => Number.isInteger(day) && day >= 1 && day <= parsed.days) };
+        } catch (error) {
+          console.warn("Could not load challenge:", error);
+          return null;
+        }
+      }
+
+      function saveChallenge() {
+        try {
+          if (challenge) localStorage.setItem(CHALLENGE_KEY, JSON.stringify(challenge));
+          else localStorage.removeItem(CHALLENGE_KEY);
+        } catch (error) {
+          showToast("Could not save challenge. Check browser storage settings.");
+        }
+      }
+
+      function localDateString(date) {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+      }
+
+      function challengeDate(offset = 0) {
+        const [year, month, day] = challenge.startDate.split("-").map(Number);
+        return new Date(year, month - 1, day + offset);
+      }
+
+      function calendarDateString(date) {
+        return localDateString(date).replace(/-/g, "");
+      }
+
+      function renderChallenge() {
+        challengeCalendar.replaceChildren();
+        const calendarActions = document.getElementById("challengeCalendarActions");
+        calendarActions.hidden = !challenge;
+        if (challenge) {
+          const startDate = challengeDate();
+          const endDate = challengeDate(1);
+          const googleParams = new URLSearchParams({
+            action: "TEMPLATE",
+            text: "Daily challenge check-in",
+            dates: `${calendarDateString(startDate)}/${calendarDateString(endDate)}`,
+            recur: `RRULE:FREQ=DAILY;COUNT=${challenge.days}`,
+            details: `Day-by-day check-ins for my ${challenge.days}-day challenge.`
+          });
+          document.getElementById("googleCalendarLink").href = `https://calendar.google.com/calendar/render?${googleParams.toString()}`;
+        }
+        document.getElementById("startChallenge").textContent = challenge ? "Restart challenge" : "Start challenge";
+        if (!challenge) {
+          challengeStatus.textContent = "Choose a duration and start your challenge.";
+          return;
+        }
+        const start = new Date(`${challenge.startDate}T00:00:00`);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const elapsed = Math.floor((today - start) / 86400000) + 1;
+        const completed = new Set(challenge.completed);
+        const checkedCount = completed.size;
+        challengeStatus.textContent = elapsed > challenge.days
+          ? `Challenge ended · ${checkedCount} of ${challenge.days} days completed.`
+          : `Day ${Math.max(1, elapsed)} of ${challenge.days} · ${checkedCount} days checked in.`;
+        for (let day = 1; day <= challenge.days; day++) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `challenge-day${completed.has(day) ? " complete" : ""}`;
+          button.textContent = completed.has(day) ? "✓" : day;
+          button.setAttribute("aria-label", `Day ${day}${completed.has(day) ? ", completed" : ""}`);
+          button.setAttribute("aria-pressed", String(completed.has(day)));
+          button.disabled = day > elapsed || elapsed > challenge.days;
+          button.addEventListener("click", () => {
+            challenge.completed = completed.has(day)
+              ? challenge.completed.filter(doneDay => doneDay !== day)
+              : [...challenge.completed, day];
+            saveChallenge();
+            renderChallenge();
+          });
+          challengeCalendar.appendChild(button);
         }
       }
 
@@ -443,6 +697,59 @@
         showToast("Completed tasks cleared.");
       });
 
+      challengeLength.addEventListener("change", () => {
+        const isCustom = challengeLength.value === "custom";
+        customChallengeLength.hidden = !isCustom;
+        if (isCustom) customChallengeLength.focus();
+      });
+
+      document.getElementById("downloadCalendar").addEventListener("click", () => {
+        if (!challenge) return;
+        const start = challengeDate();
+        const end = challengeDate(1);
+        const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+        const uid = `${Date.now()}-${Math.random().toString(16).slice(2)}@abrooooo`;
+        const lines = [
+          "BEGIN:VCALENDAR",
+          "VERSION:2.0",
+          "PRODID:-//ABROOOOO//Daily Challenge//EN",
+          "CALSCALE:GREGORIAN",
+          "BEGIN:VEVENT",
+          `UID:${uid}`,
+          `DTSTAMP:${stamp}`,
+          `DTSTART;VALUE=DATE:${calendarDateString(start)}`,
+          `DTEND;VALUE=DATE:${calendarDateString(end)}`,
+          `RRULE:FREQ=DAILY;COUNT=${challenge.days}`,
+          "SUMMARY:Daily challenge check-in",
+          `DESCRIPTION:Day-by-day check-ins for my ${challenge.days}-day challenge.`,
+          "END:VEVENT",
+          "END:VCALENDAR"
+        ];
+        const file = new Blob([lines.join("\r\n") + "\r\n"], { type: "text/calendar;charset=utf-8" });
+        const url = URL.createObjectURL(file);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `challenge-${challenge.days}-days.ics`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+
+      document.getElementById("startChallenge").addEventListener("click", () => {
+        const days = challengeLength.value === "custom"
+          ? Number(customChallengeLength.value)
+          : Number(challengeLength.value);
+        if (!Number.isInteger(days) || days < 1 || days > 365) {
+          showToast("Choose a challenge length from 1 to 365 days.");
+          if (challengeLength.value === "custom") customChallengeLength.focus();
+          return;
+        }
+        if (challenge && !window.confirm("Restart this challenge? Your current calendar check-ins will be cleared.")) return;
+        challenge = { days, startDate: localDateString(new Date()), completed: [] };
+        saveChallenge();
+        renderChallenge();
+        showToast(`${days}-day challenge started!`);
+      });
+
       document.getElementById("celebrationClose").addEventListener("click", closeCelebration);
       document.getElementById("celebrationLayer").addEventListener("click", event => {
         if (event.target.id === "celebrationLayer") closeCelebration();
@@ -453,6 +760,7 @@
 
       formatDate();
       render();
+      renderChallenge();
     })();
   </script>
 </body>
