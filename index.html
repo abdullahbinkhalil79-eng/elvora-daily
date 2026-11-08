@@ -1,1059 +1,161 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#070914" />
-  <meta name="description" content="ABROOOOO is your calm, focused daily workspace for tasks, progress, and personal challenges." />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="ABROOOOO — Daily Focus, Made Simple" />
-  <meta property="og:description" content="Make space for what matters. Plan your day, track small wins, and build a streak at your own pace." />
-  <title>ABROOOOO — Daily Focus, Made Simple</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABRO DATA</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    :root {
-      color-scheme: dark;
-      --bg: #090b10;
-      --panel: rgba(255,255,255,.055);
-      --panel-strong: rgba(255,255,255,.085);
-      --border: rgba(255,255,255,.11);
-      --text: #f5f6fa;
-      --muted: #9ba3b4;
-      --accent: #c7f3a3;
-      --accent-ink: #14200e;
-      --danger: #ff8f9a;
-      --shadow: 0 24px 80px rgba(0,0,0,.38);
-      --glass-highlight: rgba(255,255,255,.13);
-    }
     * { box-sizing: border-box; }
-    html { min-height: 100%; background: var(--bg); }
+
     body {
-      margin: 0; min-height: 100vh; color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-      background:
-        radial-gradient(ellipse at 8% 0%, rgba(107,130,179,.16), transparent 36rem),
-        radial-gradient(ellipse at 92% 10%, rgba(156,205,127,.13), transparent 32rem),
-        radial-gradient(ellipse at 50% 100%, rgba(98,113,160,.08), transparent 34rem),
-        var(--bg);
-      background-attachment: fixed;
-    }
-    button, input, select { font: inherit; }
-    button { cursor: pointer; }
-    .shell { width: min(1080px, calc(100% - 32px)); margin: 0 auto; padding: 34px 0 54px; }
-    .topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:34px; }
-    .brand { display:flex; align-items:center; gap:12px; min-width:0; }
-    .brand-mark {
-      width:44px; height:44px; display:grid; place-items:center; border:1px solid var(--border);
-      border-radius:15px; background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.035));
-      box-shadow:inset 0 1px rgba(255,255,255,.15), 0 8px 28px rgba(0,0,0,.22);
-    }
-    .brand-mark svg { width:22px; height:22px; }
-    .brand-name { font-size:18px; letter-spacing:.13em; font-weight:750; }
-    .challenge-controls { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:14px; }
-    .challenge-select,.challenge-custom { min-width:0; width:100%; border:1px solid var(--border); border-radius:11px; padding:10px; color:var(--text); background:rgba(0,0,0,.2); outline:none; font-size:12px; }
-    .challenge-select:focus,.challenge-custom:focus { border-color:rgba(130,218,255,.7); box-shadow:0 0 0 3px rgba(89,190,255,.1); }
-    .challenge-custom[hidden] { display:none; }
-    .challenge-start { grid-column:1/-1; width:100%; min-height:39px; border:1px solid rgba(130,218,255,.35); border-radius:11px; color:#d9f5ff; background:linear-gradient(115deg,rgba(44,149,219,.25),rgba(137,92,255,.2)),rgba(255,255,255,.045); box-shadow:inset 0 1px rgba(255,255,255,.16),0 8px 24px rgba(54,145,255,.12); font-size:12px; font-weight:700; }
-    .challenge-start:hover { border-color:rgba(130,218,255,.65); filter:brightness(1.12); }
-    .challenge-status { min-height:18px; margin:13px 0 10px; color:var(--muted); font-size:11px; line-height:1.5; }
-    .challenge-calendar-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 0 12px; }
-    .challenge-calendar-actions[hidden] { display:none; }
-    .calendar-action { min-height:36px; padding:8px 9px; border:1px solid rgba(126,219,255,.35); border-radius:10px; color:#e7f8ff; background:linear-gradient(115deg,rgba(26,150,220,.2),rgba(112,91,255,.18)),rgba(255,255,255,.04); box-shadow:inset 0 1px rgba(255,255,255,.14),0 0 14px rgba(66,169,255,.1); text-align:center; text-decoration:none; font-size:10px; font-weight:700; }
-    .calendar-action:hover { border-color:rgba(156,233,255,.75); filter:brightness(1.13); box-shadow:0 0 20px rgba(68,184,255,.2); }
-    .challenge-calendar { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; }
-    .challenge-day { aspect-ratio:1; min-width:0; padding:0; border:1px solid var(--border); border-radius:9px; color:#b8c1d0; background:rgba(255,255,255,.035); font-size:10px; }
-    .challenge-day:hover:not(:disabled) { border-color:rgba(130,218,255,.65); color:#e8f8ff; background:rgba(81,174,255,.12); }
-    .challenge-day:disabled { opacity:.35; cursor:default; }
-    .challenge-day.complete { color:#102016; border-color:#a8f2bc; background:linear-gradient(145deg,#a8f2bc,#83d9ef); font-weight:750; }
-    .primary-btn { border:1px solid rgba(190,226,255,.4); background:linear-gradient(125deg,#a7f3d0 0%,#8bd5ff 48%,#c4a7ff 100%); color:#101b25; box-shadow:0 7px 24px rgba(87,184,255,.2),inset 0 1px rgba(255,255,255,.72),inset 0 -1px rgba(24,57,90,.12); }
-    .primary-btn:hover { filter:brightness(1.08) saturate(1.1); box-shadow:0 9px 30px rgba(87,184,255,.28),inset 0 1px rgba(255,255,255,.8); }
-    .brand-sub { color:var(--muted); font-size:10px; letter-spacing:.16em; margin-top:4px; }
-    .date-chip { border:1px solid var(--border); border-radius:999px; padding:10px 14px; color:#cbd0dc; background:rgba(255,255,255,.035); font-size:12px; white-space:nowrap; }
-    .hero { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:24px; }
-    .eyebrow { color:var(--accent); text-transform:uppercase; letter-spacing:.18em; font-size:10px; font-weight:750; margin:0 0 12px; }
-    h1 { font-size:clamp(34px,6vw,56px); line-height:1.02; letter-spacing:-.055em; margin:0; font-weight:720; }
-    .hero p { color:var(--muted); line-height:1.65; max-width:470px; margin:14px 0 0; font-size:14px; }
-    .progress-card { width:245px; flex-shrink:0; border:1px solid var(--border); border-radius:22px; padding:18px; background:var(--panel); box-shadow:var(--shadow); backdrop-filter:blur(20px); }
-    .progress-head { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px; color:var(--muted); font-size:12px; }
-    .progress-number { font-size:28px; font-weight:700; letter-spacing:-.04em; color:var(--text); }
-    .track { height:7px; border-radius:999px; background:rgba(255,255,255,.1); overflow:hidden; }
-    .track-fill { width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#b5e98e,#e2ffc8); transition:width .25s ease; }
-    .progress-foot { color:var(--muted); font-size:11px; margin-top:10px; }
-    .layout { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(250px,.8fr); gap:18px; align-items:start; }
-    .panel { position:relative; border:1px solid var(--border); border-radius:24px; background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028) 52%,rgba(255,255,255,.018)); box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.075); backdrop-filter:blur(28px) saturate(145%); -webkit-backdrop-filter:blur(28px) saturate(145%); overflow:hidden; }
-    .panel::before { content:""; position:absolute; inset:0 0 auto; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.24),transparent); pointer-events:none; }
-    .progress-card { position:relative; border:1px solid rgba(255,255,255,.14); background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.035)); box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.09); }
-    .progress-card::after { content:""; position:absolute; width:130px; height:130px; right:-75px; top:-80px; border-radius:50%; background:rgba(199,243,163,.12); filter:blur(2px); pointer-events:none; }
-    .task-item { transition:background .2s ease,transform .2s ease; }
-    .task-item:active { transform:scale(.995); }
-    .task-item.done { background:linear-gradient(90deg,rgba(199,243,163,.045),transparent); }
-    .check-btn { transition:background .2s ease,border-color .2s ease,transform .2s ease; }
-    .check-btn:active { transform:scale(.9); }
-    .primary-btn { box-shadow:0 5px 20px rgba(199,243,163,.13),inset 0 1px rgba(255,255,255,.35); }
-    .filter-btn,.reset-btn,.delete-btn { transition:all .2s ease; }
-    .panel-head { padding:21px 22px 16px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
-    .panel-title { margin:0; font-size:16px; letter-spacing:-.02em; }
-    .panel-caption { margin:5px 0 0; color:var(--muted); font-size:12px; }
-    .count-pill { border:1px solid var(--border); background:rgba(255,255,255,.045); padding:6px 9px; border-radius:999px; color:#c9ced8; font-size:11px; white-space:nowrap; }
-    .add-form { display:flex; gap:9px; padding:0 22px 18px; }
-    .task-input { min-width:0; flex:1; color:var(--text); background:rgba(0,0,0,.18); border:1px solid var(--border); border-radius:13px; padding:13px 14px; outline:none; transition:border .2s,box-shadow .2s; }
-    .task-input:focus { border-color:rgba(199,243,163,.7); box-shadow:0 0 0 3px rgba(199,243,163,.08); }
-    .primary-btn { border:0; border-radius:13px; padding:0 17px; font-weight:750; background:var(--accent); color:var(--accent-ink); transition:transform .15s,filter .15s; }
-    .primary-btn:hover { filter:brightness(1.05); transform:translateY(-1px); }
-    .add-form .primary-btn { min-height:39px; border:1px solid rgba(130,218,255,.35); border-radius:11px; color:#d9f5ff; background:linear-gradient(115deg,rgba(44,149,219,.25),rgba(137,92,255,.2)),rgba(255,255,255,.045); box-shadow:inset 0 1px rgba(255,255,255,.16),0 8px 24px rgba(54,145,255,.12); font-size:12px; }
-    .add-form .primary-btn:hover { border-color:rgba(130,218,255,.65); filter:brightness(1.12); transform:none; }
-    .filters { display:flex; gap:7px; padding:0 22px 15px; flex-wrap:wrap; }
-    .filter-btn { border:1px solid transparent; border-radius:999px; background:transparent; color:var(--muted); padding:7px 11px; font-size:12px; }
-    .filter-btn.active { color:var(--text); background:rgba(255,255,255,.09); border-color:var(--border); }
-    .task-list { list-style:none; padding:0 12px 12px; margin:0; }
-    .task-item { display:flex; align-items:center; gap:12px; padding:13px 10px; border-top:1px solid rgba(255,255,255,.055); border-radius:12px; }
-    .task-item:hover { background:rgba(255,255,255,.025); }
-    .check-btn { width:23px; height:23px; flex:0 0 23px; border-radius:8px; border:1px solid rgba(255,255,255,.24); display:grid; place-items:center; background:transparent; color:#14200e; padding:0; }
-    .task-item.done .check-btn { border-color:var(--accent); background:var(--accent); }
-    .check-btn svg { width:14px; height:14px; }
-    .task-copy { min-width:0; flex:1; overflow-wrap:anywhere; font-size:13px; line-height:1.5; }
-    .task-item.done .task-copy { color:#818999; text-decoration:line-through; }
-    .task-meta { display:block; color:#7f8797; font-size:10px; margin-top:3px; }
-    .delete-btn { border:0; background:transparent; color:#7f8797; border-radius:9px; padding:7px; display:grid; place-items:center; }
-    .delete-btn:hover { background:rgba(255,143,154,.1); color:var(--danger); }
-    .delete-btn svg { width:16px; height:16px; }
-    .empty { color:var(--muted); text-align:center; padding:34px 18px 40px; font-size:13px; line-height:1.7; }
-    .side-stack { display:grid; gap:18px; }
-    .side-body { padding:0 22px 22px; }
-    .focus-note { padding:15px; border:1px solid rgba(199,243,163,.18); background:rgba(199,243,163,.055); border-radius:16px; }
-    .focus-note strong { display:block; font-size:13px; margin-bottom:6px; }
-    .focus-note p { margin:0; color:var(--muted); font-size:12px; line-height:1.6; }
-    .mini-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
-    .stat { border:1px solid var(--border); border-radius:15px; padding:13px; background:rgba(255,255,255,.025); }
-    .stat-label { color:var(--muted); font-size:11px; }
-    .stat-value { font-size:22px; font-weight:700; margin-top:8px; letter-spacing:-.04em; }
-    .reset-btn { width:100%; margin-top:14px; padding:11px 12px; border:1px solid var(--border); border-radius:12px; color:#c9ced8; background:rgba(255,255,255,.035); font-size:12px; }
-    .reset-btn:hover { border-color:rgba(255,143,154,.35); color:var(--danger); }
-    .footer { display:flex; justify-content:space-between; gap:12px; color:#747d8d; font-size:11px; margin-top:20px; flex-wrap:wrap; }
-    .toast { position:fixed; left:50%; bottom:22px; transform:translate(-50%,20px); opacity:0; pointer-events:none; padding:11px 15px; background:#efffdf; color:#14200e; border-radius:12px; font-size:12px; font-weight:650; box-shadow:0 10px 40px #0006; transition:all .22s; z-index:10; max-width:calc(100% - 30px); }
-    .toast.show { transform:translate(-50%,0); opacity:1; }
-    .toast.reward {
-      padding:14px 18px 14px 48px;
-      border:1px solid rgba(151,229,255,.75);
-      border-radius:16px;
-      color:#f2fbff;
-      background:linear-gradient(110deg,rgba(16,39,68,.97),rgba(44,28,77,.97));
-      box-shadow:0 0 0 1px rgba(116,192,255,.12),0 0 32px rgba(77,174,255,.3),0 12px 38px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.16);
-      backdrop-filter:blur(18px);
-      -webkit-backdrop-filter:blur(18px);
-      animation:reward-toast-glow 2s ease-in-out infinite alternate;
-    }
-    .toast.reward::before {
-      content:"✦";
-      position:absolute;
-      left:15px;
-      top:50%;
-      width:23px;
-      height:23px;
-      display:grid;
-      place-items:center;
-      transform:translateY(-50%);
-      border:1px solid rgba(151,229,255,.55);
-      border-radius:8px;
-      color:#a8f3ff;
-      background:linear-gradient(145deg,rgba(63,190,255,.24),rgba(175,104,255,.25));
-      text-shadow:0 0 12px rgba(116,225,255,.9);
-      box-shadow:0 0 16px rgba(88,196,255,.24),inset 0 1px rgba(255,255,255,.2);
-    }
-    @keyframes reward-toast-glow {
-      from { box-shadow:0 0 0 1px rgba(116,192,255,.1),0 0 22px rgba(77,174,255,.22),0 12px 38px rgba(0,0,0,.4),inset 0 1px rgba(255,255,255,.16); }
-      to { box-shadow:0 0 0 1px rgba(116,192,255,.2),0 0 34px rgba(155,103,255,.32),0 12px 38px rgba(0,0,0,.4),inset 0 1px rgba(255,255,255,.2); }
-    }
-    @media (prefers-reduced-motion:reduce) { .toast.reward { animation:none; } }
-
-    .celebration-layer { position:fixed; inset:0; z-index:20; display:grid; place-items:center; padding:20px; background:rgba(3,5,9,.46); backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px); opacity:0; pointer-events:none; transition:opacity .24s ease; }
-    .celebration-layer.show { opacity:1; pointer-events:auto; }
-    .celebration-card { width:min(360px,100%); text-align:center; padding:30px 25px 25px; border-radius:28px; border:1px solid rgba(255,255,255,.18); background:linear-gradient(145deg,rgba(42,49,59,.94),rgba(17,21,29,.96)); box-shadow:0 30px 100px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.15); transform:translateY(12px) scale(.96); transition:transform .28s cubic-bezier(.2,.8,.2,1); position:relative; overflow:hidden; }
-    .celebration-layer.show .celebration-card { transform:translateY(0) scale(1); }
-    .celebration-card::before { content:""; position:absolute; width:210px; height:210px; top:-135px; left:calc(50% - 105px); background:rgba(199,243,163,.19); border-radius:50%; filter:blur(12px); }
-    .celebration-icon { width:76px; height:76px; display:grid; place-items:center; margin:0 auto 18px; border-radius:25px; font-size:34px; background:linear-gradient(145deg,rgba(199,243,163,.25),rgba(199,243,163,.07)); border:1px solid rgba(199,243,163,.3); box-shadow:0 0 45px rgba(199,243,163,.12),inset 0 1px rgba(255,255,255,.2); animation:reward-pop .55s cubic-bezier(.16,1,.3,1) both; position:relative; }
-    .celebration-card h2 { margin:0; font-size:27px; letter-spacing:-.045em; position:relative; }
-    .celebration-card p { margin:10px 0 21px; color:#b3bdca; font-size:13px; line-height:1.65; position:relative; }
-    .celebration-card .primary-btn { min-height:43px; width:100%; position:relative; }
-    .confetti { position:fixed; z-index:22; top:-14px; width:7px; height:11px; border-radius:2px; pointer-events:none; animation:confetti-fall 1.65s ease-in forwards; }
-    @keyframes reward-pop { 0% { transform:scale(.5) rotate(-12deg); opacity:0; } 70% { transform:scale(1.12) rotate(3deg); opacity:1; } 100% { transform:scale(1) rotate(0); opacity:1; } }
-    @keyframes confetti-fall { to { transform:translate3d(var(--drift),105vh,0) rotate(680deg); opacity:0; } }
-    @media (prefers-reduced-motion:reduce) { .celebration-icon,.confetti { animation:none!important; } }
-
-    /* Neon-glass sci-fi polish */
-    :root {
-      --bg: #070914;
-      --panel: rgba(14,20,39,.62);
-      --panel-strong: rgba(20,29,54,.78);
-      --border: rgba(139,190,255,.19);
-      --text: #f2f7ff;
-      --muted: #9daac4;
-      --accent: #a9f4ff;
-      --accent-ink: #07131d;
-      --shadow: 0 24px 75px rgba(0,0,0,.42), 0 0 36px rgba(78,122,255,.08);
-    }
-    body {
-      position: relative;
-      isolation: isolate;
-      background:
-        radial-gradient(ellipse at 7% 8%, rgba(28,120,255,.21), transparent 34rem),
-        radial-gradient(ellipse at 94% 9%, rgba(169,74,255,.19), transparent 31rem),
-        radial-gradient(ellipse at 50% 94%, rgba(28,218,223,.11), transparent 35rem),
-        #070914;
-      background-attachment: fixed;
-    }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      opacity: .2;
-      background-image: linear-gradient(rgba(134,177,255,.08) 1px, transparent 1px), linear-gradient(90deg,rgba(134,177,255,.08) 1px,transparent 1px);
-      background-size: 52px 52px;
-      mask-image: linear-gradient(to bottom,black,transparent 82%);
-    }
-    .shell { position: relative; z-index: 1; }
-    .brand-mark {
-      border-color: rgba(125,210,255,.35);
-      background: linear-gradient(145deg,rgba(91,174,255,.2),rgba(149,93,255,.08));
-      box-shadow: inset 0 1px rgba(255,255,255,.2), 0 0 25px rgba(79,165,255,.18), 0 8px 28px rgba(0,0,0,.25);
-    }
-    .brand-name { text-shadow: 0 0 22px rgba(111,202,255,.3); }
-    .brand-sub,.eyebrow { color:#9feaff; }
-    h1 {
-      background: linear-gradient(105deg,#f4f8ff 6%,#a8eaff 49%,#c4a1ff 92%);
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-      filter:drop-shadow(0 0 24px rgba(94,158,255,.17));
-    }
-    .date-chip,.count-pill {
-      border-color:rgba(137,188,255,.23);
-      background:linear-gradient(120deg,rgba(86,151,255,.09),rgba(179,104,255,.07));
-      box-shadow:inset 0 1px rgba(255,255,255,.07),0 0 22px rgba(79,130,255,.08);
-    }
-    .panel,.progress-card {
-      border-color:rgba(137,188,255,.19);
-      background:linear-gradient(145deg,rgba(24,32,59,.79),rgba(12,16,32,.72) 58%,rgba(20,18,43,.67));
-      box-shadow:0 24px 70px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.11),0 0 32px rgba(83,115,255,.075);
-    }
-    .panel { transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease; }
-    .panel:hover {
-      transform:translateY(-2px);
-      border-color:rgba(122,208,255,.32);
-      box-shadow:0 27px 75px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.13),0 0 34px rgba(92,132,255,.13);
-    }
-    .panel::before { background:linear-gradient(90deg,transparent,rgba(123,209,255,.43),rgba(189,125,255,.25),transparent); }
-    .progress-card::after { background:rgba(112,202,255,.2); filter:blur(9px); }
-    .progress-head,.progress-number { position:relative; z-index:1; }
-    .track { background:rgba(255,255,255,.09); box-shadow:inset 0 1px 5px rgba(0,0,0,.3); }
-    .track-fill { background:linear-gradient(90deg,#6de4ff,#78a9ff,#d4a0ff); box-shadow:0 0 15px rgba(99,197,255,.55); }
-    .task-input,.challenge-select,.challenge-custom {
-      border-color:rgba(137,188,255,.2);
-      background:rgba(5,10,24,.55);
-      box-shadow:inset 0 1px rgba(255,255,255,.035);
-    }
-    .task-input:focus,.challenge-select:focus,.challenge-custom:focus {
-      border-color:rgba(100,218,255,.7);
-      box-shadow:0 0 0 3px rgba(66,181,255,.12),0 0 22px rgba(73,177,255,.1);
-    }
-    .add-form .primary-btn,.challenge-start {
-      border:1px solid rgba(126,219,255,.48);
-      color:#e7f8ff;
-      background:linear-gradient(115deg,rgba(26,150,220,.34),rgba(112,91,255,.31) 58%,rgba(189,91,255,.24)),rgba(255,255,255,.055);
-      box-shadow:inset 0 1px rgba(255,255,255,.23),0 0 18px rgba(66,169,255,.16),0 8px 24px rgba(29,79,173,.2);
-      backdrop-filter:blur(14px);
-      -webkit-backdrop-filter:blur(14px);
-      transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,filter .2s ease;
-    }
-    .add-form .primary-btn:hover,.challenge-start:hover {
-      border-color:rgba(156,233,255,.8);
-      filter:brightness(1.13);
-      transform:translateY(-1px);
-      box-shadow:inset 0 1px rgba(255,255,255,.3),0 0 25px rgba(68,184,255,.27),0 10px 28px rgba(49,70,180,.24);
-    }
-    .filter-btn.active {
-      border-color:rgba(119,200,255,.3);
-      background:linear-gradient(120deg,rgba(67,144,255,.16),rgba(169,102,255,.13));
-      box-shadow:inset 0 1px rgba(255,255,255,.08),0 0 16px rgba(84,132,255,.09);
-    }
-    .task-item { border-top-color:rgba(133,177,255,.09); }
-    .task-item:hover { background:linear-gradient(90deg,rgba(77,149,255,.07),rgba(170,103,255,.035),transparent); }
-    .task-item.done .check-btn,.challenge-day.complete {
-      color:#07131d;
-      border-color:#9af4ff;
-      background:linear-gradient(145deg,#a4f5ff,#a8baff);
-      box-shadow:0 0 15px rgba(105,216,255,.34);
-    }
-    .check-btn:focus-visible,.delete-btn:focus-visible,.filter-btn:focus-visible,.challenge-day:focus-visible,.reset-btn:focus-visible,.primary-btn:focus-visible,.challenge-start:focus-visible {
-      outline:2px solid #9beaff;
-      outline-offset:3px;
-    }
-    .challenge-day { border-color:rgba(137,188,255,.2); background:rgba(25,34,60,.48); }
-    .challenge-day:hover:not(:disabled) { box-shadow:0 0 15px rgba(85,190,255,.18); }
-    .focus-note { border-color:rgba(123,203,255,.23); background:linear-gradient(135deg,rgba(70,145,255,.1),rgba(167,94,255,.07)); }
-    .stat { border-color:rgba(137,188,255,.16); background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(90,115,200,.035)); }
-    .stat-value { color:#d8f4ff; text-shadow:0 0 18px rgba(104,200,255,.2); }
-    .reset-btn { border-color:rgba(137,188,255,.2); background:rgba(24,32,57,.42); }
-    .toast { background:linear-gradient(115deg,#dffbff,#e9dcff); color:#10162a; box-shadow:0 10px 40px rgba(84,161,255,.26); }
-    .celebration-card { border-color:rgba(139,203,255,.3); background:linear-gradient(145deg,rgba(28,39,69,.97),rgba(14,18,38,.98)); box-shadow:0 30px 100px rgba(0,0,0,.58),0 0 50px rgba(93,127,255,.18),inset 0 1px rgba(255,255,255,.16); }
-    .celebration-card::before { background:rgba(91,198,255,.23); }
-    .celebration-icon { border-color:rgba(131,220,255,.38); background:linear-gradient(145deg,rgba(91,193,255,.25),rgba(155,103,255,.13)); box-shadow:0 0 45px rgba(90,174,255,.2),inset 0 1px rgba(255,255,255,.2); }
-    @media (prefers-reduced-motion:reduce) { .panel { transition:none!important; } }
-
-    /* Refined brand details and accessible interaction states */
-    .shell { width:min(1120px,calc(100% - 40px)); }
-    .brand-name { font-size:16px; letter-spacing:.16em; font-weight:800; }
-    .brand-sub { font-size:9px; letter-spacing:.14em; }
-    .hero { margin-bottom:28px; }
-    .hero > div:first-child > p:last-child { max-width:490px; }
-    .panel-title { font-size:15px; font-weight:680; }
-    .panel-caption { line-height:1.5; }
-    .date-chip { font-variant-numeric:tabular-nums; }
-    .task-input::placeholder { color:#8290aa; }
-    .filter-btn:hover:not(.active),.reset-btn:hover,.delete-btn:hover { transform:translateY(-1px); }
-    .calendar-action,.challenge-day,.check-btn,.filter-btn,.reset-btn,.delete-btn { -webkit-tap-highlight-color:transparent; }
-    .task-input:focus-visible,.challenge-select:focus-visible,.challenge-custom:focus-visible,.calendar-action:focus-visible { outline:2px solid #9beaff; outline-offset:3px; }
-    .footer { padding-top:15px; border-top:1px solid rgba(137,188,255,.12); line-height:1.6; }
-    @media (max-width:760px) {
-      .shell { width:min(100% - 22px,560px); }
-      .brand-name { font-size:14px; letter-spacing:.12em; }
-      .brand-sub { font-size:8px; letter-spacing:.1em; }
-      .hero { margin-bottom:24px; }
+      margin: 0;
+      min-height: 100vh;
+      background: #080b12;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: grid;
+      place-items: center;
+      padding: 20px;
     }
 
-    @media (max-width:760px) {
-      .shell { width:min(100% - 22px,560px); padding:19px 0 35px; }
-      .topbar { margin-bottom:28px; }
-      .brand-mark { width:40px; height:40px; border-radius:13px; }
-      .date-chip { padding:8px 10px; font-size:10px; }
-      .hero { display:block; }
-      .hero p { font-size:13px; }
-      .progress-card { width:100%; margin-top:20px; }
-      .layout { grid-template-columns:1fr; }
-      .panel { border-radius:20px; }
-      .panel-head { padding:19px 17px 15px; }
-      .add-form { padding:0 17px 16px; }
-      .filters { padding:0 17px 14px; }
-      .task-list { padding:0 9px 9px; }
-      .side-body { padding:0 17px 18px; }
-      .task-input { padding:12px; font-size:13px; }
-      .primary-btn { padding:0 14px; }
+    .app {
+      width: 100%;
+      max-width: 500px;
+      background: #111827;
+      padding: 30px;
+      border: 1px solid #263247;
+      border-radius: 18px;
     }
-    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; scroll-behavior:auto!important; } }
 
-    /* Study Studio */
-    .study-panel { margin-top:18px; }
-    .study-grid { display:grid; grid-template-columns:minmax(230px,.78fr) minmax(0,1.22fr); gap:22px; padding:0 22px 22px; }
-    .study-timer { padding:20px; border:1px solid rgba(137,188,255,.2); border-radius:18px; background:linear-gradient(145deg,rgba(64,132,255,.1),rgba(169,91,255,.08)),rgba(4,10,24,.35); }
-    .study-timer-label { color:var(--muted); font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
-    .study-clock { margin:8px 0 16px; color:#e8f8ff; font-size:clamp(38px,7vw,54px); line-height:1; letter-spacing:-.06em; font-variant-numeric:tabular-nums; text-shadow:0 0 25px rgba(91,194,255,.32); }
-    .study-duration-row { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px; }
-    .study-duration { width:90px; padding:9px 10px; border:1px solid var(--border); border-radius:10px; color:var(--text); background:rgba(5,10,24,.65); outline:none; }
-    .study-duration:focus,.study-subject:focus,.study-topic:focus,.study-minutes:focus { border-color:rgba(100,218,255,.7); box-shadow:0 0 0 3px rgba(66,181,255,.12); }
-    .study-timer-actions { display:flex; gap:9px; margin-top:15px; }
-    .study-timer-actions button { min-height:39px; flex:1; border:1px solid rgba(126,219,255,.38); border-radius:11px; color:#e7f8ff; background:linear-gradient(115deg,rgba(26,150,220,.24),rgba(112,91,255,.2)),rgba(255,255,255,.04); font-size:12px; font-weight:700; }
-    .study-timer-actions button:hover { border-color:rgba(156,233,255,.75); filter:brightness(1.13); }
-    .study-progress-copy { display:flex; justify-content:space-between; gap:10px; margin-top:18px; color:var(--muted); font-size:11px; }
-    .study-progress-track { height:6px; margin-top:8px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,.09); }
-    .study-progress-fill { width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#6de4ff,#bd9aff); box-shadow:0 0 14px rgba(99,197,255,.45); transition:width .25s ease; }
-    .study-plan { min-width:0; }
-    .study-form { display:grid; grid-template-columns:minmax(100px,.8fr) minmax(130px,1.4fr) 92px auto; gap:8px; margin-bottom:12px; }
-    .study-subject,.study-topic,.study-minutes { min-width:0; width:100%; padding:11px 10px; border:1px solid rgba(137,188,255,.2); border-radius:11px; color:var(--text); background:rgba(5,10,24,.55); outline:none; font-size:12px; }
-    .study-form .primary-btn { min-height:39px; border:1px solid rgba(126,219,255,.4); color:#e7f8ff; background:linear-gradient(115deg,rgba(26,150,220,.3),rgba(112,91,255,.25)),rgba(255,255,255,.04); font-size:12px; }
-    .study-task-list { list-style:none; margin:0; padding:0; }
-    .study-task { display:flex; align-items:center; gap:10px; padding:12px 9px; border-top:1px solid rgba(133,177,255,.09); border-radius:10px; }
-    .study-task:hover { background:rgba(77,149,255,.055); }
-    .study-check { width:21px; height:21px; flex:0 0 21px; border:1px solid rgba(255,255,255,.26); border-radius:7px; color:#07131d; background:transparent; }
-    .study-task.done .study-check { border-color:#9af4ff; background:linear-gradient(145deg,#a4f5ff,#a8baff); }
-    .study-task-copy { min-width:0; flex:1; overflow-wrap:anywhere; font-size:12px; line-height:1.5; }
-    .study-task.done .study-task-copy { color:#8994a9; text-decoration:line-through; }
-    .study-task-meta { display:block; margin-top:2px; color:#8d9ab2; font-size:10px; }
-    .study-delete { padding:6px 8px; border:0; border-radius:8px; color:#8d9ab2; background:transparent; font-size:17px; }
-    .study-delete:hover { color:var(--danger); background:rgba(255,143,154,.1); }
-    .study-empty { padding:18px 10px; color:var(--muted); text-align:center; font-size:12px; line-height:1.6; }
-    .study-check:focus-visible,.study-delete:focus-visible,.study-timer-actions button:focus-visible,.study-form .primary-btn:focus-visible { outline:2px solid #9beaff; outline-offset:3px; }
-    @media (max-width:760px) {
-      .study-grid { grid-template-columns:1fr; gap:14px; padding:0 17px 18px; }
-      .study-form { grid-template-columns:1fr 1fr; }
-      .study-topic { grid-column:1/-1; grid-row:2; }
-      .study-form .primary-btn { grid-column:2; grid-row:3; }
-      .study-minutes { grid-column:1; grid-row:3; }
+    h1 { letter-spacing: 2px; }
+    .subtitle { color: #9ca3af; }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 14px;
+      background: #080b12;
+      color: white;
+      border: 1px solid #374151;
+      border-radius: 9px;
+      resize: vertical;
+      font: inherit;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 20px;
+      background: #16a34a;
+      color: white;
+      border: 0;
+      border-radius: 9px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    #status {
+      min-height: 24px;
+      overflow-wrap: anywhere;
     }
   </style>
 </head>
+
 <body>
-  <main class="shell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M5 16.5 12 3l7 13.5-7-3.7-7 3.7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="m8.2 17.2 3.8-2 3.8 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-        <div>
-          <div class="brand-name">ABROOOOO</div>
-          <div class="brand-sub">DAILY FOCUS · MADE SIMPLE</div>
-        </div>
-      </div>
-      <div class="date-chip" id="dateChip">TODAY</div>
-    </header>
+  <main class="app">
+    <h1>ABRO DATA.</h1>
+    <p class="subtitle">Data Collection Platform</p>
 
-    <section class="hero">
-      <div>
-        <p class="eyebrow">A clearer way to make progress</p>
-        <h1>Make today<br>count.</h1>
-        <p>Plan with intention, focus on what matters, and turn small daily wins into lasting momentum.</p>
-      </div>
-      <div class="progress-card">
-        <div class="progress-head"><span>TODAY'S PROGRESS</span><span id="progressPercent">0%</span></div>
-        <div class="progress-number"><span id="completedCount">0</span><span style="color:var(--muted);font-size:17px;font-weight:500"> / <span id="totalCount">0</span></span></div>
-        <div class="track" role="progressbar" aria-label="Task completion progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div class="track-fill" id="progressFill"></div></div>
-        <div class="progress-foot" id="progressMessage">Add your first task to get started.</div>
-      </div>
-    </section>
+    <form id="form">
+      <textarea
+        id="message"
+        placeholder="Write your message..."
+        maxlength="5000"
+        required
+      ></textarea>
 
-    <section class="layout">
-      <section class="panel" aria-labelledby="tasksHeading">
-        <div class="panel-head">
-          <div><h2 class="panel-title" id="tasksHeading">Today’s priorities</h2><p class="panel-caption">A focused list for a more intentional day.</p></div>
-          <span class="count-pill" id="remainingPill">0 remaining</span>
-        </div>
-        <form class="add-form" id="taskForm">
-          <input class="task-input" id="taskInput" type="text" maxlength="160" placeholder="Add a priority for today…" autocomplete="off" aria-label="New task" required>
-          <button class="primary-btn" type="submit">+ Add task</button>
-        </form>
-        <div class="filters" role="group" aria-label="Filter tasks">
-          <button class="filter-btn active" type="button" data-filter="all">All</button>
-          <button class="filter-btn" type="button" data-filter="active">To do</button>
-          <button class="filter-btn" type="button" data-filter="done">Completed</button>
-        </div>
-        <ul class="task-list" id="taskList"></ul>
-        <div class="empty" id="emptyState">Nothing on your list yet.<br>Add one small task and begin. ✦</div>
-      </section>
+      <label>
+        <input type="checkbox" id="consent" required>
+        I agree to submit my message for analysis.
+      </label>
 
-      <aside class="side-stack">
-        <section class="panel">
-          <div class="panel-head"><div><h2 class="panel-title">A note to self</h2><p class="panel-caption">A reminder for your day</p></div><span aria-hidden="true">✦</span></div>
-          <div class="side-body">
-            <div class="focus-note">
-              <strong>Progress, not perfection.</strong>
-              <p>You don’t need a perfect plan. Take the next useful step, then build from there.</p>
-            </div>
-          </div>
-        </section>
-        <section class="panel">
-          <div class="panel-head"><div><h2 class="panel-title">Your daily overview</h2><p class="panel-caption">See how far you’ve come today.</p></div></div>
-          <div class="side-body">
-            <div class="mini-stats">
-              <div class="stat"><div class="stat-label">Completed</div><div class="stat-value" id="sideCompleted">0</div></div>
-              <div class="stat"><div class="stat-label">Left to do</div><div class="stat-value" id="sideRemaining">0</div></div>
-            </div>
-            <button class="reset-btn" type="button" id="clearDoneBtn">Clear completed tasks</button>
-          </div>
-        </section>
-        <section class="panel" aria-labelledby="challengeHeading">
-          <div class="panel-head"><div><h2 class="panel-title" id="challengeHeading">Build a daily streak</h2><p class="panel-caption">Set a goal and show up, one day at a time.</p></div><span aria-hidden="true">✦</span></div>
-          <div class="side-body">
-            <div class="challenge-controls">
-              <select class="challenge-select" id="challengeLength" aria-label="Challenge duration">
-                <option value="7">7 days</option>
-                <option value="14">14 days</option>
-                <option value="30" selected>30 days</option>
-                <option value="custom">Custom</option>
-              </select>
-              <input class="challenge-custom" id="customChallengeLength" type="number" min="1" max="365" value="30" placeholder="Days (1–365)" aria-label="Custom challenge length" hidden>
-              <button class="challenge-start" id="startChallenge" type="button">Start challenge</button>
-            </div>
-            <p class="challenge-status" id="challengeStatus" aria-live="polite">Choose a duration and start your challenge.</p>
-            <div class="challenge-calendar-actions" id="challengeCalendarActions" hidden>
-              <a class="calendar-action" id="googleCalendarLink" target="_blank" rel="noopener noreferrer">Add to Google Calendar</a>
-              <button class="calendar-action" id="downloadCalendar" type="button">Download .ics</button>
-            </div>
-            <div class="challenge-calendar" id="challengeCalendar" role="group" aria-label="Challenge day calendar"></div>
-          </div>
-        </section>
-      </aside>
-    </section>
+      <button id="btn" type="submit">SUBMIT DATA →</button>
+    </form>
 
-    <section class="panel study-panel" aria-labelledby="studyHeading">
-      <div class="panel-head">
-        <div><h2 class="panel-title" id="studyHeading">Study Studio</h2><p class="panel-caption">Set your focus time, plan subjects, and celebrate every step.</p></div>
-        <span class="count-pill" id="studyTaskCount">0 subjects</span>
-      </div>
-      <div class="study-grid">
-        <div class="study-timer">
-          <div class="study-timer-label">Focus session</div>
-          <div class="study-clock" id="studyClock" role="timer" aria-live="off">60:00</div>
-          <label class="study-duration-row" for="studyDuration">Set session length <input class="study-duration" id="studyDuration" type="number" min="1" max="600" value="60" aria-label="Study session length in minutes"> min</label>
-          <div class="study-timer-actions">
-            <button id="studyTimerToggle" type="button">Start focus</button>
-            <button id="studyTimerReset" type="button">Reset</button>
-          </div>
-          <div class="study-progress-copy"><span>Subject progress</span><span id="studyProgressText">0 of 0 complete</span></div>
-          <div class="study-progress-track" role="progressbar" aria-label="Study subject completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="studyProgressTrack"><div class="study-progress-fill" id="studyProgressFill"></div></div>
-        </div>
-        <div class="study-plan">
-          <form class="study-form" id="studyForm">
-            <input class="study-subject" id="studySubject" type="text" maxlength="50" placeholder="Subject" aria-label="Subject name" required>
-            <input class="study-topic" id="studyTopic" type="text" maxlength="120" placeholder="What will you study?" aria-label="Study task" required>
-            <input class="study-minutes" id="studyMinutes" type="number" min="1" max="600" placeholder="Minutes" aria-label="Time for this subject in minutes" required>
-            <button class="primary-btn" type="submit">+ Add subject</button>
-          </form>
-          <ul class="study-task-list" id="studyTaskList" aria-label="Study subjects"></ul>
-          <div class="study-empty" id="studyEmpty">Add a subject, write what you’ll study, and set its time.</div>
-        </div>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <span>© <span id="currentYear"></span> ABROOOOO · YOUR SPACE, YOUR PACE</span>
-      <span>Your tasks stay saved in this browser on this device.</span>
-    </footer>
+    <p id="status" role="status"></p>
   </main>
-  <div class="celebration-layer" id="celebrationLayer" role="dialog" aria-modal="true" aria-labelledby="celebrationTitle" aria-describedby="celebrationMessage">
-    <div class="celebration-card">
-      <div class="celebration-icon" aria-hidden="true">✦</div>
-      <h2 id="celebrationTitle">You did it!</h2>
-      <p id="celebrationMessage">Every small win builds momentum.</p>
-      <button class="primary-btn" id="celebrationClose" type="button">Keep going</button>
-    </div>
-  </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    (() => {
-      "use strict";
-      const STORAGE_KEY = "elvora-daily-tasks-v1";
-      const CHALLENGE_KEY = "elvora-daily-challenge-v1";
-      const STUDY_KEY = "abrooooo-study-plan-v1";
-      const challengeLength = document.getElementById("challengeLength");
-      const customChallengeLength = document.getElementById("customChallengeLength");
-      const challengeStatus = document.getElementById("challengeStatus");
-      const challengeCalendar = document.getElementById("challengeCalendar");
-      const taskForm = document.getElementById("taskForm");
-      const taskInput = document.getElementById("taskInput");
-      const taskList = document.getElementById("taskList");
-      const emptyState = document.getElementById("emptyState");
-      const toast = document.getElementById("toast");
-      let tasks = loadTasks();
-      let challenge = loadChallenge();
-      let studyPlan = loadStudyPlan();
-      let studySecondsLeft = studyPlan.remainingSeconds;
-      let studyTimerInterval = null;
-      let currentFilter = "all";
-      let toastTimeout;
-      let celebrationTimeout;
-      let previousAllDone = false;
-      let celebrationShownForCurrentSet = false;
+    const SUPABASE_URL =
+      "https://saqmplsgashruvgxyqyf.supabase.co";
 
-      function loadTasks() {
-        try {
-          const stored = localStorage.getItem(STORAGE_KEY);
-          if (!stored) return [];
-          const parsed = JSON.parse(stored);
-          return Array.isArray(parsed) ? parsed.filter(item =>
-            item && typeof item.id === "string" && typeof item.text === "string" &&
-            typeof item.done === "boolean" && typeof item.createdAt === "string"
-          ) : [];
-        } catch (error) {
-          console.warn("Could not load saved tasks:", error);
-          return [];
-        }
-      }
+    const SUPABASE_KEY =
+      "sb_publishable_aG3O0MLst2EAyBJgKi8xIA_PV8nGoLq";
 
-      function saveTasks() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-          return true;
-        } catch (error) {
-          showToast("Could not save. Check browser storage settings.");
-          console.error("Could not save tasks:", error);
-          return false;
-        }
-      }
+    const status = document.getElementById("status");
+    const form = document.getElementById("form");
+    const button = document.getElementById("btn");
 
-      function loadChallenge() {
-        try {
-          const stored = localStorage.getItem(CHALLENGE_KEY);
-          if (!stored) return null;
-          const parsed = JSON.parse(stored);
-          if (!parsed || !Number.isInteger(parsed.days) || parsed.days < 1 || parsed.days > 365 ||
-              typeof parsed.startDate !== "string" || !Array.isArray(parsed.completed)) return null;
-          return { days: parsed.days, startDate: parsed.startDate, completed: parsed.completed.filter(day => Number.isInteger(day) && day >= 1 && day <= parsed.days) };
-        } catch (error) {
-          console.warn("Could not load challenge:", error);
-          return null;
-        }
-      }
+    if (!window.supabase) {
+      status.textContent = "ERROR: Supabase library failed to load.";
+    } else {
+      const db = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
 
-      function loadStudyPlan() {
-        const fallback = { durationMinutes: 60, remainingSeconds: 3600, items: [] };
-        try {
-          const stored = localStorage.getItem(STUDY_KEY);
-          if (!stored) return fallback;
-          const parsed = JSON.parse(stored);
-          if (!parsed || !Array.isArray(parsed.items)) return fallback;
-          const durationMinutes = Number.isInteger(parsed.durationMinutes) && parsed.durationMinutes >= 1 && parsed.durationMinutes <= 600
-            ? parsed.durationMinutes : 60;
-          const remainingSeconds = Number.isInteger(parsed.remainingSeconds) && parsed.remainingSeconds >= 0
-            ? Math.min(parsed.remainingSeconds, durationMinutes * 60) : durationMinutes * 60;
-          const items = parsed.items.filter(item => item && typeof item.id === "string" &&
-            typeof item.subject === "string" && typeof item.topic === "string" &&
-            Number.isInteger(item.minutes) && item.minutes >= 1 && typeof item.done === "boolean");
-          return { durationMinutes, remainingSeconds, items };
-        } catch (error) {
-          console.warn("Could not load study plan:", error);
-          return fallback;
-        }
-      }
-
-      function saveStudyPlan() {
-        try {
-          studyPlan.remainingSeconds = studySecondsLeft;
-          localStorage.setItem(STUDY_KEY, JSON.stringify(studyPlan));
-        } catch (error) {
-          showToast("Could not save study plan. Check browser storage settings.");
-          console.error("Could not save study plan:", error);
-        }
-      }
-
-      function saveChallenge() {
-        try {
-          if (challenge) localStorage.setItem(CHALLENGE_KEY, JSON.stringify(challenge));
-          else localStorage.removeItem(CHALLENGE_KEY);
-        } catch (error) {
-          showToast("Could not save challenge. Check browser storage settings.");
-        }
-      }
-
-      function localDateString(date) {
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-      }
-
-      function challengeDate(offset = 0) {
-        const [year, month, day] = challenge.startDate.split("-").map(Number);
-        return new Date(year, month - 1, day + offset);
-      }
-
-      function calendarDateString(date) {
-        return localDateString(date).replace(/-/g, "");
-      }
-
-      function renderChallenge() {
-        challengeCalendar.replaceChildren();
-        const calendarActions = document.getElementById("challengeCalendarActions");
-        calendarActions.hidden = !challenge;
-        if (challenge) {
-          const startDate = challengeDate();
-          const endDate = challengeDate(1);
-          const googleParams = new URLSearchParams({
-            action: "TEMPLATE",
-            text: "Daily challenge check-in",
-            dates: `${calendarDateString(startDate)}/${calendarDateString(endDate)}`,
-            recur: `RRULE:FREQ=DAILY;COUNT=${challenge.days}`,
-            details: `Day-by-day check-ins for my ${challenge.days}-day challenge.`
-          });
-          document.getElementById("googleCalendarLink").href = `https://calendar.google.com/calendar/render?${googleParams.toString()}`;
-        }
-        document.getElementById("startChallenge").textContent = challenge ? "Restart challenge" : "Start challenge";
-        if (!challenge) {
-          challengeStatus.textContent = "Choose a duration and start your challenge.";
-          return;
-        }
-        const start = new Date(`${challenge.startDate}T00:00:00`);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const elapsed = Math.floor((today - start) / 86400000) + 1;
-        const completed = new Set(challenge.completed);
-        const checkedCount = completed.size;
-        challengeStatus.textContent = elapsed > challenge.days
-          ? `Challenge ended · ${checkedCount} of ${challenge.days} days completed.`
-          : `Day ${Math.max(1, elapsed)} of ${challenge.days} · ${checkedCount} days checked in.`;
-        for (let day = 1; day <= challenge.days; day++) {
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = `challenge-day${completed.has(day) ? " complete" : ""}`;
-          button.textContent = completed.has(day) ? "✓" : day;
-          button.setAttribute("aria-label", `Day ${day}${completed.has(day) ? ", completed" : ""}`);
-          button.setAttribute("aria-pressed", String(completed.has(day)));
-          button.disabled = day > elapsed || elapsed > challenge.days;
-          button.addEventListener("click", () => {
-            challenge.completed = completed.has(day)
-              ? challenge.completed.filter(doneDay => doneDay !== day)
-              : [...challenge.completed, day];
-            saveChallenge();
-            renderChallenge();
-          });
-          challengeCalendar.appendChild(button);
-        }
-      }
-
-      function formatStudyClock(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const remainder = seconds % 60;
-        return `${String(minutes).padStart(2, "0")}:${String(remainder).padStart(2, "0")}`;
-      }
-
-      function renderStudy() {
-        document.getElementById("studyClock").textContent = formatStudyClock(studySecondsLeft);
-        document.getElementById("studyDuration").value = studyPlan.durationMinutes;
-        const completed = studyPlan.items.filter(item => item.done).length;
-        const total = studyPlan.items.length;
-        const percent = total ? Math.round(completed / total * 100) : 0;
-        document.getElementById("studyTaskCount").textContent = `${total} ${total === 1 ? "subject" : "subjects"}`;
-        document.getElementById("studyProgressText").textContent = `${completed} of ${total} complete`;
-        document.getElementById("studyProgressFill").style.width = `${percent}%`;
-        document.getElementById("studyProgressTrack").setAttribute("aria-valuenow", percent);
-        document.getElementById("studyTimerToggle").textContent = studyTimerInterval ? "Pause focus" : "Start focus";
-        const list = document.getElementById("studyTaskList");
-        list.innerHTML = studyPlan.items.map(item => `
-          <li class="study-task ${item.done ? "done" : ""}" data-study-id="${escapeHTML(item.id)}">
-            <button class="study-check" type="button" data-study-action="toggle" aria-label="${item.done ? "Mark as not completed" : "Complete study task"}" aria-pressed="${item.done}">${item.done ? "✓" : ""}</button>
-            <div class="study-task-copy"><strong>${escapeHTML(item.subject)}</strong> — ${escapeHTML(item.topic)}<span class="study-task-meta">${item.minutes} min planned · ${item.done ? "Completed" : "Ready when you are"}</span></div>
-            <button class="study-delete" type="button" data-study-action="delete" aria-label="Remove ${escapeHTML(item.subject)} study task" title="Remove task">×</button>
-          </li>
-        `).join("");
-        document.getElementById("studyEmpty").hidden = total > 0;
-      }
-
-      function escapeHTML(value) {
-        return value.replace(/[&<>"']/g, character => ({
-          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-        })[character]);
-      }
-
-      function showToast(message, isReward = false) {
-        toast.textContent = message;
-        toast.classList.toggle("reward", isReward);
-        toast.classList.add("show");
-        clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => toast.classList.remove("show"), isReward ? 3600 : 2200);
-      }
-
-      function formatDate() {
-        const now = new Date();
-        document.getElementById("dateChip").textContent = now.toLocaleDateString(undefined, {
-          weekday: "short", day: "numeric", month: "short", year: "numeric"
-        }).toUpperCase();
-        document.getElementById("currentYear").textContent = now.getFullYear();
-      }
-
-      function launchConfetti() {
-        if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        const pieces = 34;
-        for (let i = 0; i < pieces; i++) {
-          const piece = document.createElement("span");
-          piece.className = "confetti";
-          piece.style.left = (8 + Math.random() * 84) + "vw";
-          piece.style.background = ["#c7f3a3", "#e7f7d8", "#9eb7ff", "#f7d58b", "#f3a8c8"][i % 5];
-          piece.style.setProperty("--drift", (Math.random() * 150 - 75) + "px");
-          piece.style.animationDelay = (Math.random() * .22) + "s";
-          document.body.appendChild(piece);
-          piece.addEventListener("animationend", () => piece.remove(), { once: true });
-        }
-      }
-
-      function showCelebration() {
-        const layer = document.getElementById("celebrationLayer");
-        layer.classList.add("show");
-        launchConfetti();
-        clearTimeout(celebrationTimeout);
-        celebrationTimeout = setTimeout(() => layer.classList.remove("show"), 5200);
-        document.getElementById("celebrationClose").focus();
-      }
-
-      function closeCelebration() {
-        document.getElementById("celebrationLayer").classList.remove("show");
-        clearTimeout(celebrationTimeout);
-      }
-
-      function render() {
-        const wasAllDone = previousAllDone;
-        const completed = tasks.filter(task => task.done).length;
-        const total = tasks.length;
-        const remaining = total - completed;
-        const percent = total ? Math.round((completed / total) * 100) : 0;
-
-        document.getElementById("completedCount").textContent = completed;
-        document.getElementById("totalCount").textContent = total;
-        document.getElementById("progressPercent").textContent = percent + "%";
-        document.getElementById("progressFill").style.width = percent + "%";
-        document.getElementById("progressTrack").setAttribute("aria-valuenow", percent);
-        document.getElementById("remainingPill").textContent = remaining + " remaining";
-        document.getElementById("sideCompleted").textContent = completed;
-        document.getElementById("sideRemaining").textContent = remaining;
-        document.getElementById("progressMessage").textContent =
-          total === 0 ? "Add your first task to get started." :
-          remaining === 0 ? "Everything on your list is complete. Nice work!" :
-          "One step at a time. You've got this.";
-
-        const allDone = total > 0 && completed === total;
-        if (allDone && !wasAllDone && !celebrationShownForCurrentSet) {
-          celebrationShownForCurrentSet = true;
-          document.getElementById("celebrationTitle").textContent = total === 1 ? "First win!" : "You did it!";
-          document.getElementById("celebrationMessage").textContent = total === 1
-            ? "Your first task is complete. A small win is still a win — keep the momentum going."
-            : `All ${total} tasks complete. You showed up for yourself today — take a moment to enjoy the win.`;
-          showCelebration();
-        }
-        if (!allDone) celebrationShownForCurrentSet = false;
-        previousAllDone = allDone;
-
-        const visibleTasks = tasks.filter(task =>
-          currentFilter === "all" ||
-          (currentFilter === "active" && !task.done) ||
-          (currentFilter === "done" && task.done)
-        );
-        taskList.innerHTML = visibleTasks.map(task => `
-          <li class="task-item ${task.done ? "done" : ""}" data-id="${escapeHTML(task.id)}">
-            <button class="check-btn" type="button" data-action="toggle" aria-label="${task.done ? "Mark as not completed" : "Mark as completed"}" aria-pressed="${task.done}">
-              ${task.done ? '<svg viewBox="0 0 24 24" fill="none"><path d="m5 12 4.5 4.5L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ""}
-            </button>
-            <div class="task-copy">${escapeHTML(task.text)}<span class="task-meta">${task.done ? "Completed" : "Added " + new Date(task.createdAt).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</span></div>
-            <button class="delete-btn" type="button" data-action="delete" aria-label="Delete task" title="Delete task">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M10 11v6m4-6v6M6.5 7l1 13h9l1-13M9 7V4h6v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </li>
-        `).join("");
-        emptyState.style.display = visibleTasks.length ? "none" : "block";
-        if (!visibleTasks.length && total > 0) {
-          emptyState.textContent = currentFilter === "active"
-            ? "No tasks left to do in this filter. ✦"
-            : currentFilter === "done"
-              ? "No completed tasks yet. Keep going. ✦"
-              : "Nothing on your list yet. Add one small task and begin. ✦";
-        } else {
-          emptyState.innerHTML = "Nothing on your list yet.<br>Add one small task and begin. ✦";
-        }
-        document.querySelectorAll(".filter-btn").forEach(button => {
-          button.classList.toggle("active", button.dataset.filter === currentFilter);
-        });
-      }
-
-      taskForm.addEventListener("submit", event => {
+      form.addEventListener("submit", async (event) => {
         event.preventDefault();
-        const text = taskInput.value.trim();
-        if (!text) {
-          taskInput.focus();
+
+        const message = document
+          .getElementById("message")
+          .value.trim();
+
+        if (!message) return;
+
+        if (!document.getElementById("consent").checked) {
+          status.textContent = "Please accept the consent.";
           return;
         }
-        tasks.unshift({
-          id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2),
-          text,
-          done: false,
-          createdAt: new Date().toISOString()
-        });
-        saveTasks();
-        currentFilter = "all";
-        taskInput.value = "";
-        render();
-        taskInput.focus();
-        showToast("Task added.");
-      });
 
-      taskList.addEventListener("click", event => {
-        const button = event.target.closest("button[data-action]");
-        if (!button) return;
-        const item = button.closest(".task-item");
-        if (!item) return;
-        const task = tasks.find(entry => entry.id === item.dataset.id);
-        if (!task) return;
-        if (button.dataset.action === "toggle") {
-          task.done = !task.done;
-          saveTasks();
-          render();
-          showToast(task.done ? "Nice work — task completed." : "Task marked as to do.");
-        } else if (button.dataset.action === "delete") {
-          tasks = tasks.filter(entry => entry.id !== task.id);
-          saveTasks();
-          render();
-          showToast("Task deleted.");
+        button.disabled = true;
+        status.textContent = "Sending data...";
+
+        try {
+          const { error } = await db
+            .from("submissions")
+            .insert({ message });
+
+          if (error) throw error;
+
+          status.textContent = "SUCCESS! DATA RECEIVED.";
+          form.reset();
+
+        } catch (error) {
+          console.error(error);
+          status.textContent = "ERROR: " + error.message;
+
+        } finally {
+          button.disabled = false;
         }
       });
-
-      document.querySelector(".filters").addEventListener("click", event => {
-        const button = event.target.closest("button[data-filter]");
-        if (!button) return;
-        currentFilter = button.dataset.filter;
-        render();
-      });
-
-      document.getElementById("clearDoneBtn").addEventListener("click", () => {
-        const completed = tasks.filter(task => task.done).length;
-        if (!completed) {
-          showToast("There are no completed tasks to clear.");
-          return;
-        }
-        if (!window.confirm(`Remove ${completed} completed task${completed === 1 ? "" : "s"}?`)) return;
-        tasks = tasks.filter(task => !task.done);
-        saveTasks();
-        render();
-        showToast("Completed tasks cleared.");
-      });
-
-      challengeLength.addEventListener("change", () => {
-        const isCustom = challengeLength.value === "custom";
-        customChallengeLength.hidden = !isCustom;
-        if (isCustom) customChallengeLength.focus();
-      });
-
-      document.getElementById("downloadCalendar").addEventListener("click", () => {
-        if (!challenge) return;
-        const start = challengeDate();
-        const end = challengeDate(1);
-        const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-        const uid = `${Date.now()}-${Math.random().toString(16).slice(2)}@abrooooo`;
-        const lines = [
-          "BEGIN:VCALENDAR",
-          "VERSION:2.0",
-          "PRODID:-//ABROOOOO//Daily Challenge//EN",
-          "CALSCALE:GREGORIAN",
-          "BEGIN:VEVENT",
-          `UID:${uid}`,
-          `DTSTAMP:${stamp}`,
-          `DTSTART;VALUE=DATE:${calendarDateString(start)}`,
-          `DTEND;VALUE=DATE:${calendarDateString(end)}`,
-          `RRULE:FREQ=DAILY;COUNT=${challenge.days}`,
-          "SUMMARY:Daily challenge check-in",
-          `DESCRIPTION:Day-by-day check-ins for my ${challenge.days}-day challenge.`,
-          "END:VEVENT",
-          "END:VCALENDAR"
-        ];
-        const file = new Blob([lines.join("\r\n") + "\r\n"], { type: "text/calendar;charset=utf-8" });
-        const url = URL.createObjectURL(file);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `challenge-${challenge.days}-days.ics`;
-        link.click();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-      });
-
-      document.getElementById("startChallenge").addEventListener("click", () => {
-        const days = challengeLength.value === "custom"
-          ? Number(customChallengeLength.value)
-          : Number(challengeLength.value);
-        if (!Number.isInteger(days) || days < 1 || days > 365) {
-          showToast("Choose a challenge length from 1 to 365 days.");
-          if (challengeLength.value === "custom") customChallengeLength.focus();
-          return;
-        }
-        if (challenge && !window.confirm("Restart this challenge? Your current calendar check-ins will be cleared.")) return;
-        challenge = { days, startDate: localDateString(new Date()), completed: [] };
-        saveChallenge();
-        renderChallenge();
-        showToast(`${days}-day challenge started!`);
-      });
-
-      document.getElementById("studyDuration").addEventListener("change", event => {
-        const minutes = Number(event.target.value);
-        if (!Number.isInteger(minutes) || minutes < 1 || minutes > 600) {
-          showToast("Set a study session from 1 to 600 minutes.");
-          renderStudy();
-          return;
-        }
-        if (studyTimerInterval) clearInterval(studyTimerInterval);
-        studyTimerInterval = null;
-        studyPlan.durationMinutes = minutes;
-        studySecondsLeft = minutes * 60;
-        saveStudyPlan();
-        renderStudy();
-      });
-
-      document.getElementById("studyTimerToggle").addEventListener("click", () => {
-        if (studyTimerInterval) {
-          clearInterval(studyTimerInterval);
-          studyTimerInterval = null;
-          saveStudyPlan();
-          renderStudy();
-          return;
-        }
-        if (studySecondsLeft <= 0) studySecondsLeft = studyPlan.durationMinutes * 60;
-        studyTimerInterval = setInterval(() => {
-          studySecondsLeft = Math.max(0, studySecondsLeft - 1);
-          if (studySecondsLeft === 0) {
-            clearInterval(studyTimerInterval);
-            studyTimerInterval = null;
-            showToast("Focus session complete! Take a well-earned break.");
-          }
-          saveStudyPlan();
-          renderStudy();
-        }, 1000);
-        renderStudy();
-      });
-
-      document.getElementById("studyTimerReset").addEventListener("click", () => {
-        if (studyTimerInterval) clearInterval(studyTimerInterval);
-        studyTimerInterval = null;
-        studySecondsLeft = studyPlan.durationMinutes * 60;
-        saveStudyPlan();
-        renderStudy();
-        showToast("Focus timer reset. You’re ready for a fresh session.");
-      });
-
-      document.getElementById("studyForm").addEventListener("submit", event => {
-        event.preventDefault();
-        const subject = document.getElementById("studySubject").value.trim();
-        const topic = document.getElementById("studyTopic").value.trim();
-        const minutes = Number(document.getElementById("studyMinutes").value);
-        if (!subject || !topic || !Number.isInteger(minutes) || minutes < 1 || minutes > 600) {
-          showToast("Add a subject, task, and time from 1 to 600 minutes.");
-          return;
-        }
-        studyPlan.items.push({
-          id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-          subject,
-          topic,
-          minutes,
-          done: false
-        });
-        saveStudyPlan();
-        event.currentTarget.reset();
-        renderStudy();
-        document.getElementById("studySubject").focus();
-        showToast(`${subject} added to your study plan.`);
-      });
-
-      document.getElementById("studyTaskList").addEventListener("click", event => {
-        const button = event.target.closest("button[data-study-action]");
-        if (!button) return;
-        const row = button.closest(".study-task");
-        const item = studyPlan.items.find(entry => entry.id === row?.dataset.studyId);
-        if (!item) return;
-        if (button.dataset.studyAction === "toggle") {
-          item.done = !item.done;
-          saveStudyPlan();
-          renderStudy();
-          if (item.done) {
-            const rewards = [
-              `Great work on ${item.subject}! Every focused minute counts. ✨`,
-              `One more win, ${item.subject} done! You’re building real momentum. 🚀`,
-              `Brilliant progress! You showed up and got it done. Keep going! 🌟`,
-              `Nice focus! ${item.minutes} planned minutes turned into a completed win. 🎉`
-            ];
-            showToast(rewards[Math.floor(Math.random() * rewards.length)], true);
-          } else {
-            showToast("Task back on your list. You can finish it when you’re ready.");
-          }
-        } else if (button.dataset.studyAction === "delete") {
-          studyPlan.items = studyPlan.items.filter(entry => entry.id !== item.id);
-          saveStudyPlan();
-          renderStudy();
-          showToast("Study task removed.");
-        }
-      });
-
-      document.getElementById("celebrationClose").addEventListener("click", closeCelebration);
-      document.getElementById("celebrationLayer").addEventListener("click", event => {
-        if (event.target.id === "celebrationLayer") closeCelebration();
-      });
-      document.addEventListener("keydown", event => {
-        if (event.key === "Escape") closeCelebration();
-      });
-
-      formatDate();
-      render();
-      renderChallenge();
-      renderStudy();
-    })();
+    }
   </script>
 </body>
 </html>
